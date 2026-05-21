@@ -17,6 +17,12 @@ data/
 *.rar
 *.pth
 
+# Node.js
+node_modules/
+dist/
+
+# Environment variables (API keys)
+.env
 
 # IDEs and OS files
 .DS_Store
