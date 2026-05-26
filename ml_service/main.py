@@ -11,6 +11,7 @@ from torchvision import transforms
 from fastapi import FastAPI, UploadFile, File, Form, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 import io
+import cv2
 import base64
 import threading
 import matplotlib
@@ -88,29 +89,32 @@ def get_model(model_name: str, is_quantized: bool = False):
         print(f"[*] Loading model weight file for: {cache_key}...")
         if model_name == 'efficientnet':
             model = timm.create_model('efficientnet_b4', pretrained=False, num_classes=NUM_CLASSES)
-            base_name = 'quantized_efficientnet_model.pth' if is_quantized else 'best_efficientnet_model.pth'
+            base_name = 'best_efficientnet_model.pth'
             model_path = f'../notebooks/{base_name}'
             if not os.path.exists(model_path):
                 model_path = f'notebooks/{base_name}'
         elif model_name == 'vit':
             model = timm.create_model('vit_base_patch16_224', pretrained=False, num_classes=NUM_CLASSES)
-            base_name = 'quantized_vit_model.pth' if is_quantized else 'best_vit_model.pth'
+            base_name = 'best_vit_model.pth'
             model_path = f'../notebooks/{base_name}'
             if not os.path.exists(model_path):
                 model_path = f'notebooks/{base_name}'
         
-        if is_quantized:
-            import torch.ao.quantization as ao_quant
-            model = ao_quant.quantize_dynamic(
-                model, {torch.nn.Linear}, dtype=torch.qint8
-            )
-
+        # 1. Load weights in FP32
         if os.path.exists(model_path):
             state_dict = torch.load(model_path, map_location='cpu', weights_only=True)
             model.load_state_dict(state_dict)
             print(f"[+] Loaded weights from {model_path}")
         else:
             print(f"[!] Warning: Model weights not found at {model_path}. Using uninitialized model.")
+            
+        # 2. Apply Dynamic Quantization AFTER loading weights
+        if is_quantized:
+            import torch.ao.quantization as ao_quant
+            print(f"[*] Applying INT8 Dynamic Quantization to {cache_key} for faster CPU inference...")
+            model = ao_quant.quantize_dynamic(
+                model, {torch.nn.Linear}, dtype=torch.qint8
+            )
         
         model.eval()
         MODELS[cache_key] = model
@@ -185,23 +189,26 @@ async def predict(
         
         # --- 1. Compute Grad-CAM ---
         try:
-            from pytorch_grad_cam import GradCAM
-            from pytorch_grad_cam.utils.image import show_cam_on_image
-
-            if "efficientnet" in model_name.lower():
-                target_layers = [model.conv_head]
-                cam = GradCAM(model=model, target_layers=target_layers)
+            if is_q:
+                print("[*] Skipping Grad-CAM: Gradients are not supported on INT8 quantized models.")
             else:
-                def reshape_transform(tensor, height=14, width=14):
-                    result = tensor[:, 1:, :].reshape(tensor.size(0), height, width, tensor.size(2))
-                    result = result.transpose(2, 3).transpose(1, 2)
-                    return result
-                target_layers = [model.blocks[-1].norm1]
-                cam = GradCAM(model=model, target_layers=target_layers, reshape_transform=reshape_transform)
+                from pytorch_grad_cam import GradCAM
+                from pytorch_grad_cam.utils.image import show_cam_on_image
 
-            grayscale_cam = cam(input_tensor=input_tensor, targets=None)[0, :]
-            vis = show_cam_on_image(rgb_img_float, grayscale_cam, use_rgb=True, image_weight=gradcam_opacity)
-            gradcam_b64 = array_to_base64(vis)
+                if "efficientnet" in model_name.lower():
+                    target_layers = [model.conv_head]
+                    cam = GradCAM(model=model, target_layers=target_layers)
+                else:
+                    def reshape_transform(tensor, height=14, width=14):
+                        result = tensor[:, 1:, :].reshape(tensor.size(0), height, width, tensor.size(2))
+                        result = result.transpose(2, 3).transpose(1, 2)
+                        return result
+                    target_layers = [model.blocks[-1].norm1]
+                    cam = GradCAM(model=model, target_layers=target_layers, reshape_transform=reshape_transform)
+
+                grayscale_cam = cam(input_tensor=input_tensor, targets=None)[0, :]
+                vis = show_cam_on_image(rgb_img_float, grayscale_cam, use_rgb=True, image_weight=gradcam_opacity)
+                gradcam_b64 = array_to_base64(vis)
         except Exception as e:
             print(f"[!] Grad-CAM error: {e}")
             
@@ -255,6 +262,7 @@ async def predict(
             
         # --- 3. Compute SHAP ---
         try:
+            top_class_id = top_prediction["class_id"]
             def shap_predict(images):
                 model.eval()
                 batch_tensors = []
@@ -266,21 +274,22 @@ async def predict(
                 with torch.no_grad():
                     logits = model(batch)
                     probs_batch = torch.nn.functional.softmax(logits, dim=1)
-                return probs_batch.cpu().numpy()
+                # Only return the probability of the top predicted class to prevent a 102-column squished plot
+                return probs_batch[:, top_class_id:top_class_id+1].cpu().numpy()
 
+            # Detailed SHAP using inpaint_telea for organic superpixels instead of a blocky grid
             masker = shap.maskers.Image("inpaint_telea", img_resized.shape)
-            class_names = list(IP102_CLASSES.values())
-            shap_explainer = shap.Explainer(shap_predict, masker, output_names=class_names)
+            shap_explainer = shap.Explainer(shap_predict, masker, output_names=[top_prediction["label"]])
             
+            # Use dynamic evaluations (default 100) for detailed map
             shap_values = shap_explainer(np.expand_dims(img_resized, axis=0), max_evals=shap_evals, batch_size=10)
             
-            plt.figure()
+            plt.figure(figsize=(6, 4))
             shap.image_plot(shap_values, show=False)
             fig = plt.gcf()
             
             buf = io.BytesIO()
-            fig.savefig(buf, format="jpeg", bbox_inches='tight', pad_inches=0)
-            plt.close(fig)
+            fig.savefig(buf, format="jpeg", bbox_inches='tight', pad_inches=0.1)
             plt.close('all')
             shap_b64 = base64.b64encode(buf.getvalue()).decode('utf-8')
         except Exception as e:
