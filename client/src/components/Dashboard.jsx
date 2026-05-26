@@ -58,7 +58,7 @@ export default function Dashboard() {
     formData.append('gradcam_opacity', gradcamOpacity);
 
     try {
-      const res = await axios.post('http://localhost:5000/predict', formData, {
+      const res = await axios.post('/api/predict', formData, {
         headers: { 'Content-Type': 'multipart/form-data' }
       });
       setResults(res.data);

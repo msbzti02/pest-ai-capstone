@@ -14,7 +14,7 @@ export function Chatbot({ pestName }) {
     if (pestName && messages.length === 0) {
       setMessages([{
         role: 'system',
-        content: `Hello! I am the **PestAI Agronomist**. I have analyzed the image and diagnosed the issue as **${pestName}**.\n\nYou can ask me anything about treatment, biology, or agricultural impact.`
+        content: `Merhaba! Ben **PestAI Tarım Danışmanınız**. Yapay zeka sistemimiz yüklediğiniz görselde **${pestName}** teşhisi koydu.\n\nBu hastalık/zararlı hakkında sormak istediklerinizi (örneğin: hasada etkisi nedir, hangi organik ilaçları kullanabilirim?) bana danışabilirsiniz.`
       }]);
     }
   }, [pestName]);
@@ -36,7 +36,7 @@ export function Chatbot({ pestName }) {
     setIsTyping(true);
 
     try {
-      const res = await axios.post('http://localhost:5000/chat', {
+      const res = await axios.post('/api/chat', {
         message: input,
         pest_name: pestName
       });
@@ -50,8 +50,8 @@ export function Chatbot({ pestName }) {
   };
 
   return (
-    <div className="flex flex-col flex-1 border-l border-border bg-card/50 backdrop-blur-xl">
-      <div className="p-4 border-b border-border bg-secondary/30 flex items-center gap-3">
+    <div className="flex flex-col h-full w-full overflow-hidden bg-card/50 backdrop-blur-xl">
+      <div className="p-4 border-b border-border bg-secondary/30 flex items-center gap-3 shrink-0">
         <div className="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center">
           <Sparkles className="w-4 h-4 text-primary" />
         </div>
@@ -61,7 +61,7 @@ export function Chatbot({ pestName }) {
         </div>
       </div>
 
-      <div className="flex-1 overflow-y-auto p-4 space-y-6">
+      <div className="flex-1 overflow-y-auto overscroll-contain scroll-smooth p-4 space-y-6" style={{ WebkitOverflowScrolling: 'touch' }}>
         {messages.map((msg, idx) => (
           <motion.div
             initial={{ opacity: 0, y: 10 }}

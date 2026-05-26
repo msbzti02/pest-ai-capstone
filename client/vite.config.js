@@ -9,6 +9,15 @@ export default defineConfig({
     tailwindcss(),
   ],
   server: {
-    port: 3000
+    port: 3000,
+    host: true, // This fixes the IPv6 [::1] error by listening on all addresses
+    allowedHosts: true,
+    proxy: {
+      '/api': {
+        target: 'http://localhost:5000',
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/api/, '')
+      }
+    }
   }
 })
