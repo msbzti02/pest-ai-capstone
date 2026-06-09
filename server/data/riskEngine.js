@@ -120,11 +120,11 @@ export function calculateRiskScore({ pest_name, confidence = 0.8, temperature = 
   const pestScore = baseSeverity;
 
   // Factor 2: Weather conditions
-  let weatherScore = 50;
-  if (temperature >= 20 && temperature <= 35) weatherScore += 20;
-  if (humidity >= 60 && humidity <= 85) weatherScore += 15;
+  let weatherScore = 10; // Start low! Only add risk if conditions are ideal for pests.
+  if (temperature >= 20 && temperature <= 35) weatherScore += 40;
+  if (humidity >= 60 && humidity <= 85) weatherScore += 30;
   if (wind_speed < 15) weatherScore += 10;
-  if (temperature >= 25 && humidity >= 70) weatherScore += 5; // Hot + humid = pest paradise
+  if (temperature >= 25 && humidity >= 70) weatherScore += 10; // Hot + humid = pest paradise
   weatherScore = Math.min(100, weatherScore);
 
   // Factor 3: Season
@@ -132,11 +132,11 @@ export function calculateRiskScore({ pest_name, confidence = 0.8, temperature = 
   const seasonScore = (SEASON_RISK[month] || 0.5) * 100;
 
   // Factor 4: Region (Turkey agricultural regions)
-  let regionScore = 50;
+  let regionScore = 20; // Start low (default for non-agricultural hotspots)
   if (lat >= 36 && lat <= 42 && lon >= 26 && lon <= 45) {
-    regionScore = 65; // Turkey mainland — agricultural heartland
+    regionScore = 50; // Turkey mainland — agricultural heartland
     if (lat >= 37 && lat <= 38 && lon >= 32 && lon <= 37) regionScore = 75; // Konya-Aksaray (high agriculture)
-    if (lat >= 36 && lat <= 37 && lon >= 34 && lon <= 36) regionScore = 80; // Adana-Mersin (Çukurova)
+    if (lat >= 36 && lat <= 37 && lon >= 34 && lon <= 36) regionScore = 90; // Adana-Mersin (Çukurova)
   }
 
   // Factor 5: Confidence

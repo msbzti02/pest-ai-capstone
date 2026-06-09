@@ -139,14 +139,22 @@ export default function MapView() {
   };
 
   const handleDeleteReport = async (id) => {
-    try {
-      await axios.delete(`/api/sightings/${id}`);
+    const removeFromState = () => {
       setSightings(prev => prev.filter(s => s.id !== id));
       const newIds = myReportIds.filter(myId => myId !== id);
       setMyReportIds(newIds);
       localStorage.setItem('myReportIds', JSON.stringify(newIds));
+    };
+
+    try {
+      await axios.delete(`/api/sightings/${id}`);
+      removeFromState();
     } catch (err) {
       console.error('Failed to delete report', err);
+      // If the server says it's already gone (404), clean up our local ghost data!
+      if (err.response && err.response.status === 404) {
+        removeFromState();
+      }
     }
   };
 

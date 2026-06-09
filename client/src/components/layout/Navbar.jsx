@@ -6,7 +6,7 @@ export function Navbar({ theme, toggleTheme, setActiveView, isSidebarOpen, setIs
   const { user, logout, setAuthModalOpen } = useAuth();
 
   return (
-    <nav className="w-full z-50 relative border-b border-border bg-background/80 backdrop-blur-md shrink-0 h-16">
+    <nav className="w-full z-50 sticky top-0 border-b border-border bg-background/80 backdrop-blur-md shrink-0 h-16">
       <div className="flex h-16 items-center px-6 max-w-[1600px] mx-auto justify-between">
         <motion.div 
           initial={{ opacity: 0, x: -20 }}

@@ -1001,6 +1001,29 @@ app.get('/alerts', async (req, res) => {
 });
 
 // ════════════════════════════════════════════════════════════════
+// ═══              ECONOMIC IMPACT ROUTES                    ═══
+// ════════════════════════════════════════════════════════════════
+
+app.get('/economic-impact/crops', (req, res) => {
+  res.json(CROP_ECONOMICS);
+});
+
+app.get('/crop-stages/:crop', (req, res) => {
+  const crop = req.params.crop;
+  res.json({ stages: CROP_GROWTH_STAGES[crop] || [] });
+});
+
+app.post('/economic-impact', (req, res) => {
+  const { pest_name, crop, field_size_ha, infestation_level } = req.body;
+  res.json(calculateEconomicImpact(pest_name, crop, field_size_ha, infestation_level));
+});
+
+app.post('/crop-stage-advice', (req, res) => {
+  const { pest_name, crop, growth_stage } = req.body;
+  res.json(getCropStageAdvice(pest_name, crop, growth_stage));
+});
+
+// ════════════════════════════════════════════════════════════════
 // ═══              FARMER FIELDS ROUTES                      ═══
 // ════════════════════════════════════════════════════════════════
 

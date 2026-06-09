@@ -88,7 +88,6 @@ export function Sidebar({
         { id: 'analytics', label: 'Analytics', icon: Share2 },
         { id: 'history', label: 'Diagnostic History', icon: Clock },
         { id: 'compare', label: 'Compare', icon: ArrowLeftRight },
-        { id: 'library', label: 'Pest Library', icon: BookOpen },
         { id: 'lifecycle', label: 'Lifecycle View', icon: Bug },
         { id: 'economic', label: 'Economic Impact', icon: Calculator },
         { id: 'feedback', label: 'Feedback', icon: ThumbsUp },

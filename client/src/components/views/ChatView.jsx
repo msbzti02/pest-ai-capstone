@@ -84,7 +84,7 @@ export default function ChatView() {
   };
 
   return (
-    <div className="flex flex-col h-[calc(100vh-5rem)] max-w-5xl mx-auto">
+    <div className="absolute inset-4 md:inset-8 flex flex-col max-w-5xl mx-auto">
 
       {/* ── Compact Header Bar ── */}
       <div className="flex items-center justify-between py-3 shrink-0">
