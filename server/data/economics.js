@@ -12,6 +12,8 @@
  *   - ROI comparison (IPM vs Chemical vs Organic)
  */
 
+import { PEST_DATABASE } from './pestDatabase.js';
+
 // ── Crop Economics Database ──
 export const CROP_ECONOMICS = {
   rice: { name: "Rice", price_per_ton: 850, avg_yield_tons_ha: 6.5, season: "Jun-Nov", currency: "USD" },
@@ -246,11 +248,36 @@ export function getCropStageAdvice({ pest_name, crop, growth_stage }) {
   const stageKey = growth_stage.toLowerCase().replace(/\s+/g, '_');
   const restrictions = CHEMICAL_RESTRICTIONS[stageKey] || null;
 
+  let vulnerability = matchedVuln;
+  
+  if (!vulnerability) {
+    const pestData = PEST_DATABASE[pest_name];
+    let risk = 1.0;
+    let fallbackNote = `No exact vulnerability data for ${pest_name} on ${crop} at this stage.`;
+    
+    if (stageInfo.vulnerability === "Critical") {
+      risk = 1.5;
+      fallbackNote = `Critical Growth Stage: The crop is extremely vulnerable right now. Any infestation by ${pest_name} can cause severe economic damage.`;
+    } else if (stageInfo.vulnerability === "High") {
+      risk = 1.3;
+      fallbackNote = `High Risk Stage: Monitor closely. The crop is highly susceptible to damage at this stage.`;
+    } else if (stageInfo.vulnerability === "Medium") {
+      risk = 1.1;
+      fallbackNote = `Moderate Risk Stage: Standard monitoring recommended.`;
+    }
+
+    if (pestData && pestData.description) {
+      fallbackNote += ` Pest Info: ${pestData.description}`;
+    }
+
+    vulnerability = { risk_multiplier: risk, note: fallbackNote };
+  }
+
   return {
     pest_name,
     crop,
     stage: stageInfo,
-    vulnerability: matchedVuln || { risk_multiplier: 1.0, note: "No specific vulnerability data" },
+    vulnerability: vulnerability,
     chemical_restrictions: restrictions,
     all_stages: stages,
   };
