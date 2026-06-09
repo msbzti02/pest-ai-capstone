@@ -26,6 +26,20 @@ const SEVERITY_COLORS = {
   Low: { fill: '#3b82f6', stroke: '#2563eb' },
 };
 
+// Top Cities Data (10 Countries)
+const COUNTRY_CITIES = {
+  'Turkey': ['Adana', 'Ankara', 'Antalya', 'Bursa', 'Gaziantep', 'Istanbul', 'Izmir', 'Konya', 'Mersin', 'Sanliurfa'],
+  'Libya': ['Ajdabiya', 'Al Khums', 'Benghazi', 'Misrata', 'Sebha', 'Sirte', 'Tarhuna', 'Tripoli', 'Zawiya', 'Zuwara'],
+  'Egypt': ['Cairo', 'Alexandria', 'Giza', 'Shubra El Kheima', 'Port Said', 'Suez', 'Mansoura', 'Tanta', 'Asyut', 'Ismailia'],
+  'Greece': ['Athens', 'Thessaloniki', 'Patras', 'Heraklion', 'Ioannina', 'Larissa', 'Volos', 'Rhodes', 'Chania', 'Agrinio'],
+  'Italy': ['Rome', 'Milan', 'Naples', 'Turin', 'Palermo', 'Genoa', 'Bologna', 'Florence', 'Bari', 'Catania'],
+  'Spain': ['Madrid', 'Barcelona', 'Valencia', 'Seville', 'Zaragoza', 'Malaga', 'Murcia', 'Palma', 'Las Palmas', 'Bilbao'],
+  'Morocco': ['Casablanca', 'Fez', 'Tangier', 'Marrakesh', 'Salé', 'Meknes', 'Rabat', 'Oujda', 'Kenitra', 'Agadir'],
+  'Algeria': ['Algiers', 'Oran', 'Constantine', 'Annaba', 'Blida', 'Batna', 'Djelfa', 'Sétif', 'Sidi Bel Abbès', 'Biskra'],
+  'Tunisia': ['Tunis', 'Sfax', 'Sousse', 'Kairouan', 'Bizerte', 'Gabès', 'Aryanah', 'Gafsa', 'El Mourouj', 'Ben Arous'],
+  'Syria': ['Damascus', 'Aleppo', 'Homs', 'Latakia', 'Hama', 'Raqqa', 'Deir ez-Zor', 'Hasakah', 'Qamishli', 'Tartus']
+};
+
 // Helper to recenter map
 function RecenterButton() {
   const map = useMap();
@@ -46,7 +60,12 @@ export default function MapView() {
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState('all');
   const [showAddForm, setShowAddForm] = useState(false);
-  const [newSighting, setNewSighting] = useState({ lat: '', lng: '', pestType: '', severity: 'Medium', count: 1 });
+  const mapRef = useRef(null);
+  const [newSighting, setNewSighting] = useState({ country: '', city: '', pestType: '', severity: 'Medium', count: 1 });
+  const [locationChoices, setLocationChoices] = useState([]);
+  const [myReportIds, setMyReportIds] = useState(() => {
+    try { return JSON.parse(localStorage.getItem('myReportIds') || '[]'); } catch { return []; }
+  });
 
   useEffect(() => {
     const fetchData = async () => {
@@ -66,21 +85,68 @@ export default function MapView() {
     fetchData();
   }, []);
 
-  const handleAddSighting = async (e) => {
-    e.preventDefault();
+  const postSighting = async (lat, lng, region) => {
     try {
       const res = await axios.post('/api/sightings', {
-        lat: parseFloat(newSighting.lat),
-        lng: parseFloat(newSighting.lng),
+        lat: parseFloat(lat),
+        lng: parseFloat(lng),
         pestType: newSighting.pestType,
         severity: newSighting.severity,
         count: parseInt(newSighting.count) || 1,
+        region: region
       });
       setSightings(prev => [...prev, res.data]);
-      setNewSighting({ lat: '', lng: '', pestType: '', severity: 'Medium', count: 1 });
+      
+      const newIds = [...myReportIds, res.data.id];
+      setMyReportIds(newIds);
+      localStorage.setItem('myReportIds', JSON.stringify(newIds));
+      
+      setNewSighting({ country: '', city: '', pestType: '', severity: 'Medium', count: 1 });
       setShowAddForm(false);
+      setLocationChoices([]);
+      
+      if (mapRef.current) {
+        mapRef.current.flyTo([res.data.lat, res.data.lng], 8, { duration: 1.5 });
+      }
     } catch (err) {
       console.error('Failed to add sighting', err);
+    }
+  };
+
+  const handleAddSighting = async (e) => {
+    e.preventDefault();
+    try {
+      const loc = `${newSighting.city.trim()}, ${newSighting.country.trim()}`;
+      const coordMatch = newSighting.city.trim().match(/^[-+]?[0-9]*\.?[0-9]+,\s*[-+]?[0-9]*\.?[0-9]+$/);
+      if (coordMatch) {
+        const parts = loc.split(',');
+        await postSighting(parseFloat(parts[0]), parseFloat(parts[1]), 'Custom Coordinates');
+      } else {
+        const geocodeRes = await axios.get(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(loc)}&limit=5`);
+        if (geocodeRes.data && geocodeRes.data.length > 0) {
+          if (geocodeRes.data.length === 1) {
+            await postSighting(geocodeRes.data[0].lat, geocodeRes.data[0].lon, geocodeRes.data[0].display_name.split(',')[0]);
+          } else {
+            setLocationChoices(geocodeRes.data);
+          }
+        } else {
+          alert('Could not find that location. Please try "City, Country" or enter coordinates like "39.9, 32.8"');
+        }
+      }
+    } catch (err) {
+      console.error('Failed to resolve location', err);
+    }
+  };
+
+  const handleDeleteReport = async (id) => {
+    try {
+      await axios.delete(`/api/sightings/${id}`);
+      setSightings(prev => prev.filter(s => s.id !== id));
+      const newIds = myReportIds.filter(myId => myId !== id);
+      setMyReportIds(newIds);
+      localStorage.setItem('myReportIds', JSON.stringify(newIds));
+    } catch (err) {
+      console.error('Failed to delete report', err);
     }
   };
 
@@ -121,37 +187,62 @@ export default function MapView() {
 
       {/* Add Sighting Form */}
       {showAddForm && (
-        <form onSubmit={handleAddSighting} className="glass-panel p-4 flex flex-wrap gap-3 items-end">
-          <div className="flex flex-col gap-1">
-            <label className="text-xs text-muted-foreground">Latitude</label>
-            <input type="number" step="0.01" required placeholder="39.92" value={newSighting.lat} onChange={e => setNewSighting(p => ({...p, lat: e.target.value}))}
-              className="px-3 py-2 bg-secondary/50 border border-border/50 rounded-lg text-sm w-28 text-foreground" />
-          </div>
-          <div className="flex flex-col gap-1">
-            <label className="text-xs text-muted-foreground">Longitude</label>
-            <input type="number" step="0.01" required placeholder="32.85" value={newSighting.lng} onChange={e => setNewSighting(p => ({...p, lng: e.target.value}))}
-              className="px-3 py-2 bg-secondary/50 border border-border/50 rounded-lg text-sm w-28 text-foreground" />
-          </div>
-          <div className="flex flex-col gap-1">
-            <label className="text-xs text-muted-foreground">Pest Type</label>
-            <input type="text" required placeholder="Fall Armyworm" value={newSighting.pestType} onChange={e => setNewSighting(p => ({...p, pestType: e.target.value}))}
-              className="px-3 py-2 bg-secondary/50 border border-border/50 rounded-lg text-sm w-40 text-foreground" />
-          </div>
-          <div className="flex flex-col gap-1">
-            <label className="text-xs text-muted-foreground">Severity</label>
-            <select value={newSighting.severity} onChange={e => setNewSighting(p => ({...p, severity: e.target.value}))}
-              className="px-3 py-2 bg-secondary/50 border border-border/50 rounded-lg text-sm text-foreground">
-              <option>High</option><option>Medium</option><option>Low</option>
-            </select>
-          </div>
-          <div className="flex flex-col gap-1">
-            <label className="text-xs text-muted-foreground">Count</label>
-            <input type="number" min="1" value={newSighting.count} onChange={e => setNewSighting(p => ({...p, count: e.target.value}))}
-              className="px-3 py-2 bg-secondary/50 border border-border/50 rounded-lg text-sm w-20 text-foreground" />
-          </div>
-          <button type="submit" className="px-4 py-2 bg-rose-500 text-white rounded-lg text-sm font-medium hover:bg-rose-600 transition">
-            Add
-          </button>
+        <form onSubmit={handleAddSighting} className="glass-panel p-4 flex flex-col gap-3">
+          {locationChoices.length > 0 ? (
+            <div className="space-y-3 w-full">
+              <p className="text-sm font-bold text-foreground">Select exact location:</p>
+              <div className="flex flex-col gap-2 max-h-48 overflow-y-auto custom-scrollbar pr-2">
+                {locationChoices.map((choice, i) => (
+                  <button key={i} type="button" onClick={() => postSighting(choice.lat, choice.lon, choice.display_name.split(',')[0])} className="text-left px-3 py-2 bg-secondary border border-border/50 rounded-lg hover:bg-rose-500/20 transition text-xs text-foreground">
+                    {choice.display_name}
+                  </button>
+                ))}
+              </div>
+              <button type="button" onClick={() => setLocationChoices([])} className="px-4 py-2 w-full bg-secondary/50 text-foreground rounded-lg text-sm font-medium hover:bg-secondary/80 transition">Cancel</button>
+            </div>
+          ) : (
+            <div className="flex flex-wrap gap-3 items-end">
+              <div className="flex flex-col gap-1">
+                <label className="text-xs text-muted-foreground">Country</label>
+                <input list="country-options" type="text" required placeholder="Type or select..." value={newSighting.country} onChange={e => setNewSighting(p => ({...p, country: e.target.value, city: ''}))}
+                  className="px-3 py-2 bg-secondary/50 border border-border/50 rounded-lg text-sm w-36 text-foreground" />
+                <datalist id="country-options">
+                  {Object.keys(COUNTRY_CITIES).map(c => <option key={c} value={c} />)}
+                </datalist>
+              </div>
+              <div className="flex flex-col gap-1">
+                <label className="text-xs text-muted-foreground">City</label>
+                <input list="city-options" type="text" required placeholder="Type or select..." value={newSighting.city} onChange={e => setNewSighting(p => ({...p, city: e.target.value}))}
+                  className="px-3 py-2 bg-secondary/50 border border-border/50 rounded-lg text-sm w-36 text-foreground" />
+                <datalist id="city-options">
+                  {(COUNTRY_CITIES[newSighting.country] || []).map(c => <option key={c} value={c} />)}
+                </datalist>
+              </div>
+              <div className="flex flex-col gap-1">
+                <label className="text-xs text-muted-foreground">Pest Type</label>
+                <input list="pest-options" type="text" required placeholder="Fall Armyworm" value={newSighting.pestType} onChange={e => setNewSighting(p => ({...p, pestType: e.target.value}))}
+                  className="px-3 py-2 bg-secondary/50 border border-border/50 rounded-lg text-sm w-40 text-foreground" />
+                <datalist id="pest-options">
+                  {uniquePests.map(p => <option key={p} value={p} />)}
+                </datalist>
+              </div>
+              <div className="flex flex-col gap-1">
+                <label className="text-xs text-muted-foreground">Severity</label>
+                <select value={newSighting.severity} onChange={e => setNewSighting(p => ({...p, severity: e.target.value}))}
+                  className="px-3 py-2 bg-secondary/50 border border-border/50 rounded-lg text-sm text-foreground">
+                  <option>High</option><option>Medium</option><option>Low</option>
+                </select>
+              </div>
+              <div className="flex flex-col gap-1">
+                <label className="text-xs text-muted-foreground">Farmers Affected</label>
+                <input type="number" min="1" value={newSighting.count} onChange={e => setNewSighting(p => ({...p, count: e.target.value}))}
+                  className="px-3 py-2 bg-secondary/50 border border-border/50 rounded-lg text-sm w-28 text-foreground" />
+              </div>
+              <button type="submit" className="px-4 py-2 bg-rose-500 text-white rounded-lg text-sm font-medium hover:bg-rose-600 transition">
+                {newSighting.city && newSighting.country ? 'Search & Add' : 'Add'}
+              </button>
+            </div>
+          )}
         </form>
       )}
 
@@ -199,6 +290,28 @@ export default function MapView() {
             )}
           </div>
 
+          {/* My Reports */}
+          {myReportIds.length > 0 && (
+            <div className="mt-4 pt-4 border-t border-border/30">
+              <h3 className="font-bold text-foreground mb-3 flex items-center gap-2">
+                <MapPin className="text-emerald-500 w-5 h-5" /> My Reports
+              </h3>
+              <div className="space-y-2 max-h-32 overflow-y-auto custom-scrollbar pr-2">
+                {sightings.filter(s => myReportIds.includes(s.id)).map(s => (
+                  <div key={s.id} className="p-2 bg-secondary/30 rounded-lg border border-border/50 flex justify-between items-center group">
+                    <div>
+                      <p className="text-xs font-bold text-foreground">{s.pestType}</p>
+                      <p className="text-[10px] text-muted-foreground">{s.region} • Count: {s.count}</p>
+                    </div>
+                    <button onClick={() => handleDeleteReport(s.id)} className="text-muted-foreground hover:text-red-500 transition opacity-0 group-hover:opacity-100 p-1" title="Delete Sighting">
+                      &times;
+                    </button>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
           {/* Legend */}
           <div className="mt-4 pt-3 border-t border-border/30 space-y-1.5">
             <p className="text-xs font-bold text-muted-foreground mb-2">Severity Legend</p>
@@ -216,6 +329,7 @@ export default function MapView() {
             </div>
           ) : (
             <MapContainer
+              ref={mapRef}
               center={TURKEY_CENTER}
               zoom={TURKEY_ZOOM}
               className="w-full h-full z-0"

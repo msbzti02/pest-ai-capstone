@@ -1137,6 +1137,20 @@ app.get('/sightings', async (req, res) => {
   }
 });
 
+// Delete a Sighting
+app.delete('/sightings/:id', async (req, res) => {
+  try {
+    const deleted = await Sighting.destroy({ where: { id: req.params.id } });
+    if (deleted) {
+      res.json({ success: true });
+    } else {
+      res.status(404).json({ error: 'Sighting not found' });
+    }
+  } catch (err) {
+    res.status(500).json({ error: 'Failed to delete sighting' });
+  }
+});
+
 // Enhanced health check
 app.get('/health', (req, res) => {
   res.json({
