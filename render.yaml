@@ -2,6 +2,7 @@ services:
   - type: web
     name: pestai-main-app
     env: node
+    plan: free
     buildCommand: cd client && npm install && npm run build && cd ../server && npm install
     startCommand: cd server && node index.js
     envVars:
@@ -16,5 +17,6 @@ services:
   - type: web
     name: pestai-ml-service
     env: python
+    plan: free
     buildCommand: cd ml_service && pip install -r requirements.txt
     startCommand: cd ml_service && uvicorn main:app --host 0.0.0.0 --port $PORT
