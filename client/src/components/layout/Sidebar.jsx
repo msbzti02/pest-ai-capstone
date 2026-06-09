@@ -4,7 +4,8 @@ import {
   FlaskConical, Eye, Layers, ChevronDown, ChevronUp,
   Activity, Clock, TrendingUp, Sparkles, Shield, Bolt,
   CircleDot, Brain, Microscope,
-  Cloud, MapPin, Share2, ArrowLeftRight, BookOpen, Calculator, ThumbsUp, Terminal
+  Cloud, MapPin, Share2, ArrowLeftRight, BookOpen, Calculator, ThumbsUp, Terminal,
+  CheckCircle2, ShieldAlert, Bug, MessageSquare
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { cn } from '../../lib/utils';
@@ -66,8 +67,15 @@ export function Sidebar({
 
   const NAV_SECTIONS = [
     {
+      title: 'AI ASSISTANT',
+      items: [
+        { id: 'chat', label: 'AI Advisor', icon: MessageSquare, highlight: true },
+      ]
+    },
+    {
       title: 'ENVIRONMENT',
       items: [
+        { id: 'fields', label: 'My Fields', icon: MapPin },
         { id: 'spray', label: 'Spray Safety', icon: Cloud },
         { id: 'map', label: 'Outbreak Map', icon: MapPin },
       ]
@@ -75,10 +83,12 @@ export function Sidebar({
     {
       title: 'TOOLS',
       items: [
+        { id: 'treatment', label: 'Treatment Tracker', icon: CheckCircle2 },
+        { id: 'risk', label: 'Risk Score', icon: ShieldAlert },
         { id: 'analytics', label: 'Analytics', icon: Share2 },
         { id: 'history', label: 'Diagnostic History', icon: Clock },
         { id: 'compare', label: 'Compare', icon: ArrowLeftRight },
-        { id: 'library', label: 'Pest Library', icon: BookOpen },
+        { id: 'lifecycle', label: 'Lifecycle View', icon: Bug },
         { id: 'economic', label: 'Economic Impact', icon: Calculator },
         { id: 'feedback', label: 'Feedback', icon: ThumbsUp },
       ]
@@ -155,16 +165,27 @@ export function Sidebar({
                 {section.title}
               </h4>
               <div className="space-y-0.5">
-                {section.items.map((item) => {
+              {section.items.map((item) => {
                   const Icon = item.icon;
+                  const isActive = activeView === item.id;
                   return (
                     <button
                       key={item.id}
                       onClick={() => handleNavClick(item.id, item.label)}
-                      className="w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium text-foreground/80 hover:text-foreground hover:bg-secondary/50 transition-colors text-left"
+                      className={cn(
+                        "w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-all text-left",
+                        isActive
+                          ? "bg-primary/15 text-primary border border-primary/30 shadow-[0_0_12px_rgba(16,185,129,0.1)]"
+                          : item.highlight
+                            ? "text-emerald-400 hover:bg-emerald-500/10 hover:text-emerald-300 border border-transparent hover:border-emerald-500/20"
+                            : "text-foreground/80 hover:text-foreground hover:bg-secondary/50 border border-transparent"
+                      )}
                     >
-                      <Icon className="w-4 h-4 text-muted-foreground" />
+                      <Icon className={cn("w-4 h-4", isActive ? "text-primary" : item.highlight ? "text-emerald-400" : "text-muted-foreground")} />
                       <span>{item.label}</span>
+                      {item.highlight && !isActive && (
+                        <span className="ml-auto text-[8px] font-bold px-1.5 py-0.5 rounded-full bg-emerald-500/20 text-emerald-400 uppercase tracking-wider">RAG</span>
+                      )}
                     </button>
                   );
                 })}

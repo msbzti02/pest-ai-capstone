@@ -1,253 +1,270 @@
-import { Search, BookOpen } from 'lucide-react';
-import { useState } from 'react';
-
-const PEST_DB = [
-  { 
-    id: 1, 
-    name: 'Rice Leafhopper', 
-    scientific: 'Nephotettix virescens',
-    risk: 'High', 
-    crops: ['Rice'], 
-    desc: 'Small green leafhoppers that transmit tungro virus to rice plants.',
-    family: 'Cicadellidae',
-    duration: '30-40 days',
-    treatments: [
-      { day: 1, text: 'Scout & Identify' },
-      { day: 2, text: 'Apply Neem Oil' },
-      { day: 5, text: 'Chemical Control' },
-      { day: 14, text: 'Follow-up Monitor' }
-    ]
-  },
-  { 
-    id: 2, 
-    name: 'Fall Armyworm', 
-    scientific: 'Spodoptera frugiperda',
-    risk: 'High', 
-    crops: ['Corn', 'Sorghum', 'Rice'], 
-    desc: 'Highly destructive caterpillar that feeds on leaves, stems, and reproductive parts.',
-    family: 'Noctuidae',
-    duration: '30-60 days',
-    treatments: [
-      { day: 1, text: 'Early Detection' },
-      { day: 2, text: 'Bt Spray' },
-      { day: 5, text: 'Emamectin Benzoate' },
-      { day: 10, text: 'Pheromone Traps' }
-    ]
-  },
-  { 
-    id: 3, 
-    name: 'Green Peach Aphid', 
-    scientific: 'Myzus persicae',
-    risk: 'Medium', 
-    crops: ['Vegetables', 'Tobacco', 'Peach'], 
-    desc: 'Small green aphids that cause leaf curl and transmit plant viruses.',
-    family: 'Aphididae',
-    duration: '10-14 days',
-    treatments: [
-      { day: 1, text: 'Water Blast' },
-      { day: 2, text: 'Release Ladybugs' },
-      { day: 4, text: 'Insecticidal Soap' },
-      { day: 7, text: 'Monitor & Repeat' }
-    ]
-  },
-  { 
-    id: 4, 
-    name: 'Aphid', 
-    scientific: 'Aphidoidea spp.',
-    risk: 'Medium', 
-    crops: ['Vegetables', 'Cereals', 'Fruits'], 
-    desc: 'Sap-sucking insects that weaken plants and transmit viral diseases.',
-    family: 'Aphididae',
-    duration: '7-14 days',
-    treatments: [
-      { day: 1, text: 'Identify Species' },
-      { day: 2, text: 'Neem Oil Spray' },
-      { day: 5, text: 'Systemic Insecticide' },
-      { day: 10, text: 'Companion Planting' }
-    ]
-  },
-  { 
-    id: 5, 
-    name: 'Corn Borer', 
-    scientific: 'Ostrinia nubilalis',
-    risk: 'Medium', 
-    crops: ['Corn', 'Sorghum', 'Cotton'], 
-    desc: 'Larvae bore into stalks and ears causing structural damage and yield loss.',
-    family: 'Crambidae',
-    duration: '40-65 days',
-    treatments: [
-      { day: 1, text: 'Egg Mass Scouting' },
-      { day: 2, text: 'Trichogramma Release' },
-      { day: 4, text: 'Bt Application' },
-      { day: 14, text: 'Stalk Destruction' }
-    ]
-  },
-  { 
-    id: 6, 
-    name: 'Whitefly', 
-    scientific: 'Bemisia tabaci',
-    risk: 'Medium', 
-    crops: ['Cotton', 'Tomato', 'Cucumber'], 
-    desc: 'Tiny white flying insects that feed on plant sap and excrete honeydew.',
-    family: 'Aleyrodidae',
-    duration: '16-28 days',
-    treatments: [
-      { day: 1, text: 'Yellow Sticky Traps' },
-      { day: 3, text: 'Encarsia Wasps' },
-      { day: 5, text: 'Spiromesifen Spray' },
-      { day: 10, text: 'Reflective Mulch' }
-    ]
-  },
-  { 
-    id: 7, 
-    name: 'Migratory Locust', 
-    scientific: 'Locusta migratoria',
-    risk: 'Critical', 
-    crops: ['All Crops'], 
-    desc: 'Swarm-forming grasshoppers capable of devastating entire regions of crops.',
-    family: 'Acrididae',
-    duration: '2-3 months',
-    treatments: [
-      { day: 1, text: 'Satellite Tracking' },
-      { day: 2, text: 'Aerial Spraying' },
-      { day: 5, text: 'Metarhizium Fungi' },
-      { day: 14, text: 'Post-swarm Assess' }
-    ]
-  },
-  { 
-    id: 8, 
-    name: 'Brown Planthopper', 
-    scientific: 'Nilaparvata lugens',
-    risk: 'High', 
-    crops: ['Rice'], 
-    desc: 'Major rice pest causing hopper burn and transmitting grassy stunt virus.',
-    family: 'Delphacidae',
-    duration: '25-30 days',
-    treatments: [
-      { day: 1, text: 'Drain Field' },
-      { day: 2, text: 'Buprofezin Application' },
-      { day: 7, text: 'Duck Pasturing' },
-      { day: 14, text: 'Resistant Varieties' }
-    ]
-  },
-  { 
-    id: 9, 
-    name: 'Diamondback Moth', 
-    scientific: 'Plutella xylostella',
-    risk: 'High', 
-    crops: ['Cabbage', 'Broccoli', 'Canola'], 
-    desc: 'Small moth whose larvae feed heavily on cruciferous vegetables.',
-    family: 'Plutellidae',
-    duration: '14-21 days',
-    treatments: [
-      { day: 1, text: 'Pheromone Mating Dis.' },
-      { day: 2, text: 'Spinosad Spray' },
-      { day: 5, text: 'Diadegma Wasps' },
-      { day: 10, text: 'Crop Rotation' }
-    ]
-  }
-];
+import { BookOpen, Search, Leaf, AlertTriangle, ChevronRight, Activity, Sprout } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import axios from 'axios';
 
 export default function LibraryView() {
-  const [search, setSearch] = useState('');
+  const [pests, setPests] = useState([]);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [selectedPest, setSelectedPest] = useState(null);
+  const [loading, setLoading] = useState(true);
 
-  const filteredPests = PEST_DB.filter(p => 
-    p.name.toLowerCase().includes(search.toLowerCase()) || 
-    p.crops.some(c => c.toLowerCase().includes(search.toLowerCase())) ||
-    p.scientific.toLowerCase().includes(search.toLowerCase())
+  // VLM Description state (mock loaded locally for fallback, or could be fetched)
+  const [vlmDesc, setVlmDesc] = useState('');
+  // Lifecycle state
+  const [lifecycle, setLifecycle] = useState(null);
+  const [activeTab, setActiveTab] = useState('overview'); // overview, treatment, lifecycle
+
+  useEffect(() => {
+    const fetchLibrary = async () => {
+      try {
+        const res = await axios.get('/api/pest-library');
+        setPests(res.data.pests);
+        if (res.data.pests.length > 0) {
+          handleSelectPest(res.data.pests[0]);
+        }
+      } catch (error) {
+        console.error("Failed to load pest library", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchLibrary();
+  }, []);
+
+  const handleSelectPest = async (pest) => {
+    setSelectedPest(pest);
+    setActiveTab('overview');
+    
+    // Fetch detailed info
+    try {
+      const bioRes = await axios.post('/api/biology', { pest_name: pest.pest_name });
+      setVlmDesc(bioRes.data.info);
+      
+      const lifeRes = await axios.get(`/api/pest-lifecycle/${encodeURIComponent(pest.pest_name)}`);
+      setLifecycle(lifeRes.data);
+    } catch (e) {
+      console.error(e);
+      setVlmDesc("Detailed biological description unavailable.");
+      setLifecycle(null);
+    }
+  };
+
+  const filteredPests = pests.filter(p => 
+    p.pest_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    (p.scientific && p.scientific.toLowerCase().includes(searchTerm.toLowerCase()))
   );
 
+  const getSeverityBadge = (severity) => {
+    switch (severity?.toLowerCase()) {
+      case 'critical': return 'bg-red-500/20 text-red-400 border-red-500/30';
+      case 'high': return 'bg-rose-500/20 text-rose-400 border-rose-500/30';
+      case 'medium': return 'bg-amber-500/20 text-amber-400 border-amber-500/30';
+      case 'low': return 'bg-emerald-500/20 text-emerald-400 border-emerald-500/30';
+      default: return 'bg-secondary text-muted-foreground border-border/30';
+    }
+  };
+
   return (
-    <div className="w-full max-w-6xl mx-auto space-y-6">
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
-        <div className="flex items-center gap-3">
-          <BookOpen className="w-6 h-6 text-foreground" />
-          <h2 className="text-xl font-bold text-foreground">Pest Encyclopedia</h2>
+    <div className="w-full max-w-6xl mx-auto h-[calc(100vh-140px)] flex flex-col">
+      {/* Header */}
+      <div className="flex items-center gap-3 mb-6 shrink-0">
+        <div className="p-3 bg-purple-500/20 rounded-xl">
+          <BookOpen className="w-6 h-6 text-purple-500" />
         </div>
-        
-        <div className="flex gap-3">
-          <div className="relative">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-            <input 
-              type="text" 
-              placeholder="Search pests..." 
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-              className="pl-9 pr-4 py-2 bg-secondary/30 border border-border/50 rounded-md text-sm focus:outline-none focus:border-primary/50 text-foreground w-48"
-            />
-          </div>
-          <select className="bg-secondary/30 border border-border/50 rounded-md px-4 py-2 text-sm text-muted-foreground focus:outline-none appearance-none">
-            <option>All Crops</option>
-            <option>Rice</option>
-            <option>Corn</option>
-            <option>Vegetables</option>
-          </select>
-          <select className="bg-secondary/30 border border-border/50 rounded-md px-4 py-2 text-sm text-muted-foreground focus:outline-none appearance-none">
-            <option>All Severity</option>
-            <option>Critical</option>
-            <option>High</option>
-            <option>Medium</option>
-          </select>
+        <div>
+          <h2 className="text-2xl font-bold text-foreground">Pest Encyclopedia</h2>
+          <p className="text-muted-foreground text-sm">Comprehensive database of {pests.length} agricultural pests and diseases</p>
         </div>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        {filteredPests.map(pest => (
-          <div key={pest.id} className="glass-panel p-5 bg-card/60 border border-border/50 rounded-xl hover:border-primary/30 transition-colors flex flex-col h-full">
-            <div className="flex justify-between items-start mb-1">
-              <div>
-                <h3 className="text-[15px] font-bold text-foreground">{pest.name}</h3>
-                <p className="text-[11px] text-muted-foreground italic">{pest.scientific}</p>
-              </div>
-              <span className={`text-[9px] font-bold px-2 py-0.5 rounded ${
-                pest.risk === 'Critical' ? 'bg-red-500/10 text-red-500 border border-red-500/20' :
-                pest.risk === 'High' ? 'bg-rose-500/10 text-rose-500 border border-rose-500/20' :
-                'bg-amber-500/10 text-amber-500 border border-amber-500/20'
-              }`}>
-                {pest.risk}
-              </span>
-            </div>
-            
-            <p className="text-[12px] text-foreground/80 mt-3 mb-4 leading-relaxed line-clamp-2">
-              {pest.desc}
-            </p>
-            
-            <div className="flex flex-wrap gap-1.5 mb-4">
-              {pest.crops.map(c => (
-                <span key={c} className="px-2 py-0.5 bg-secondary/50 border border-border/30 rounded text-[10px] text-muted-foreground">
-                  {c}
-                </span>
-              ))}
-            </div>
+      <div className="flex flex-col md:flex-row gap-6 flex-1 min-h-0">
+        {/* Sidebar / Search */}
+        <div className="w-full md:w-80 flex flex-col shrink-0">
+          <div className="relative mb-4">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+            <input 
+              type="text" 
+              placeholder="Search by name or scientific..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="w-full pl-9 pr-4 py-3 bg-secondary/50 border border-border/50 rounded-xl text-sm text-foreground focus:outline-none focus:border-purple-500"
+            />
+          </div>
 
-            <div className="flex items-center gap-4 text-[10px] text-muted-foreground mb-4">
-              <span className="flex items-center gap-1">
-                <span className="w-1.5 h-1.5 rounded-full bg-slate-500/50" /> {pest.family}
-              </span>
-              <span className="flex items-center gap-1">
-                <span className="w-1.5 h-1.5 rounded-full bg-slate-500/50" /> {pest.duration}
-              </span>
-            </div>
-
-            {/* Treatment Steps */}
-            <div className="mt-auto pt-4 border-t border-border/20">
-              <h4 className="text-[10px] font-bold text-foreground mb-2 flex items-center gap-1">
-                <span className="w-3 h-3 rounded-full border border-foreground/30 flex items-center justify-center text-[7px]">+</span>
-                Treatment Steps
-              </h4>
-              <div className="space-y-1.5">
-                {pest.treatments.map(t => (
-                  <div key={t.day} className="flex items-center gap-2">
-                    <span className="px-1.5 py-0.5 bg-secondary rounded text-[9px] text-foreground font-mono w-9 text-center shrink-0">
-                      Day {t.day}
-                    </span>
-                    <span className="text-[11px] text-muted-foreground truncate">{t.text}</span>
+          <div className="flex-1 overflow-y-auto custom-scrollbar glass-panel p-2 space-y-1">
+            {loading ? (
+              <div className="p-4 text-center text-sm text-muted-foreground">Loading library...</div>
+            ) : filteredPests.length === 0 ? (
+              <div className="p-4 text-center text-sm text-muted-foreground">No pests found.</div>
+            ) : (
+              filteredPests.map((pest) => (
+                <button
+                  key={pest.pest_name}
+                  onClick={() => handleSelectPest(pest)}
+                  className={`w-full flex items-center justify-between p-3 rounded-lg transition-all text-left ${
+                    selectedPest?.pest_name === pest.pest_name
+                      ? 'bg-purple-500/10 border border-purple-500/30 shadow-[0_0_15px_rgba(168,85,247,0.1)]'
+                      : 'hover:bg-secondary/40 border border-transparent'
+                  }`}
+                >
+                  <div className="truncate pr-2">
+                    <p className={`text-sm font-bold truncate ${selectedPest?.pest_name === pest.pest_name ? 'text-purple-400' : 'text-foreground'}`}>
+                      {pest.pest_name}
+                    </p>
+                    <p className="text-[10px] text-muted-foreground italic truncate">{pest.scientific}</p>
                   </div>
+                  <ChevronRight className={`w-4 h-4 shrink-0 ${selectedPest?.pest_name === pest.pest_name ? 'text-purple-500' : 'text-muted-foreground/30'}`} />
+                </button>
+              ))
+            )}
+          </div>
+        </div>
+
+        {/* Main Content Area */}
+        {selectedPest ? (
+          <div className="flex-1 glass-panel flex flex-col overflow-hidden">
+            {/* Pest Header */}
+            <div className="p-6 border-b border-border/30 shrink-0">
+              <div className="flex justify-between items-start mb-4">
+                <div>
+                  <h3 className="text-3xl font-bold text-foreground mb-1">{selectedPest.pest_name}</h3>
+                  <p className="text-sm text-muted-foreground italic">{selectedPest.scientific} • Family: {selectedPest.family}</p>
+                </div>
+                <div className={`px-3 py-1.5 rounded-lg border text-xs font-bold uppercase tracking-wider ${getSeverityBadge(selectedPest.severity)}`}>
+                  {selectedPest.severity} SEVERITY
+                </div>
+              </div>
+
+              {/* Tabs */}
+              <div className="flex gap-4 border-b border-border/20">
+                {['overview', 'treatment', 'lifecycle'].map((tab) => (
+                  <button
+                    key={tab}
+                    onClick={() => setActiveTab(tab)}
+                    className={`px-4 py-2 text-sm font-bold capitalize transition-colors border-b-2 ${
+                      activeTab === tab ? 'text-purple-400 border-purple-500' : 'text-muted-foreground border-transparent hover:text-foreground'
+                    }`}
+                  >
+                    {tab}
+                  </button>
                 ))}
               </div>
             </div>
+
+            {/* Tab Content */}
+            <div className="p-6 flex-1 overflow-y-auto custom-scrollbar">
+              
+              {activeTab === 'overview' && (
+                <div className="space-y-6">
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="bg-secondary/20 p-4 rounded-xl border border-border/20">
+                      <p className="text-xs text-muted-foreground uppercase mb-1 flex items-center gap-1"><Leaf className="w-3 h-3" /> Targeted Crops</p>
+                      <p className="text-sm font-medium text-foreground">{(selectedPest.crops || []).join(', ')}</p>
+                    </div>
+                    <div className="bg-secondary/20 p-4 rounded-xl border border-border/20">
+                      <p className="text-xs text-muted-foreground uppercase mb-1 flex items-center gap-1"><Activity className="w-3 h-3" /> Lifecycle Duration</p>
+                      <p className="text-sm font-medium text-foreground">{selectedPest.lifecycle}</p>
+                    </div>
+                  </div>
+
+                  <div>
+                    <h4 className="text-sm font-bold text-foreground mb-2">Description & Biology</h4>
+                    <div className="prose prose-invert max-w-none text-sm text-muted-foreground leading-relaxed bg-secondary/10 p-5 rounded-xl border border-border/20">
+                      {/* Render markdown if VLM desc contains it, else plain text */}
+                      {vlmDesc ? (
+                        <div dangerouslySetInnerHTML={{ __html: vlmDesc.replace(/\n/g, '<br/>').replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>') }} />
+                      ) : (
+                        <p>{selectedPest.description}</p>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {activeTab === 'treatment' && (
+                <div className="space-y-4">
+                  <div className="flex items-center gap-2 mb-4 p-3 bg-blue-500/10 border border-blue-500/20 rounded-lg text-blue-400 text-sm">
+                    <ShieldAlert className="w-4 h-4" />
+                    Recommended 4-Step Standard Treatment Protocol
+                  </div>
+                  
+                  <div className="space-y-4">
+                    {selectedPest.treatment?.map((t, idx) => (
+                      <div key={idx} className="flex gap-4 p-4 bg-secondary/20 rounded-xl border border-border/20">
+                        <div className="flex-shrink-0 w-12 h-12 bg-purple-500/10 rounded-full flex items-center justify-center text-purple-400 font-bold border border-purple-500/20">
+                          D{t.day}
+                        </div>
+                        <div>
+                          <div className="flex items-center gap-2 mb-1">
+                            <h4 className="font-bold text-foreground">{t.step}</h4>
+                            <span className="text-[10px] uppercase px-2 py-0.5 rounded bg-secondary text-muted-foreground border border-border/30">
+                              {t.method}
+                            </span>
+                          </div>
+                          <p className="text-sm text-muted-foreground">{t.desc}</p>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                  
+                  <button className="w-full mt-4 py-3 bg-purple-500/20 text-purple-400 border border-purple-500/30 hover:bg-purple-500 hover:text-white transition rounded-xl text-sm font-bold">
+                    Start Treatment Plan in Tracker
+                  </button>
+                </div>
+              )}
+
+              {activeTab === 'lifecycle' && lifecycle && (
+                <div className="space-y-6">
+                  {lifecycle.has_detailed_data ? (
+                    <div className="p-3 bg-emerald-500/10 border border-emerald-500/20 rounded-lg text-emerald-400 text-sm mb-4">
+                      Detailed stage-by-stage vulnerability data available for this pest.
+                    </div>
+                  ) : (
+                    <div className="p-3 bg-amber-500/10 border border-amber-500/20 rounded-lg text-amber-400 text-sm mb-4">
+                      Using generalized lifecycle data. Specific stage durations may vary by region.
+                    </div>
+                  )}
+
+                  <div className="space-y-4 relative before:absolute before:inset-0 before:ml-5 before:-translate-x-px md:before:mx-auto md:before:translate-x-0 before:h-full before:w-0.5 before:bg-gradient-to-b before:from-transparent before:via-border/50 before:to-transparent">
+                    {lifecycle.stages.map((stage, idx) => (
+                      <div key={idx} className="relative flex items-center justify-between md:justify-normal md:odd:flex-row-reverse group is-active">
+                        <div className="flex items-center justify-center w-10 h-10 rounded-full border-4 border-background bg-secondary/80 shrink-0 md:order-1 md:group-odd:-translate-x-1/2 md:group-even:translate-x-1/2 z-10 text-xs font-bold text-foreground">
+                          {idx + 1}
+                        </div>
+                        <div className="w-[calc(100%-4rem)] md:w-[calc(50%-2.5rem)] p-4 rounded-xl border border-border/20 bg-secondary/30">
+                          <div className="flex items-center justify-between mb-1">
+                            <h4 className="font-bold text-foreground" style={{ color: stage.color }}>{stage.name}</h4>
+                            <span className="text-xs text-muted-foreground">{stage.duration_days} days</span>
+                          </div>
+                          <div className="mb-2">
+                            <span className={`text-[10px] uppercase font-bold px-2 py-0.5 rounded ${
+                              stage.vulnerability.includes('High') ? 'bg-red-500/20 text-red-400' :
+                              stage.vulnerability.includes('Medium') ? 'bg-amber-500/20 text-amber-400' : 'bg-blue-500/20 text-blue-400'
+                            }`}>
+                              {stage.vulnerability} Vuln.
+                            </span>
+                          </div>
+                          <p className="text-xs text-muted-foreground"><strong>Control:</strong> {stage.control}</p>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+
+                  <div className="mt-8 p-4 border border-rose-500/30 bg-rose-500/10 rounded-xl text-center">
+                    <p className="text-xs text-rose-400 font-bold uppercase mb-1">Critical Treatment Window</p>
+                    <p className="text-sm text-foreground">{lifecycle.critical_window}</p>
+                  </div>
+                </div>
+              )}
+
+            </div>
           </div>
-        ))}
+        ) : (
+          <div className="flex-1 glass-panel flex items-center justify-center text-muted-foreground/50 flex-col">
+            <Sprout className="w-16 h-16 mb-4 opacity-50" />
+            <p>Select a pest from the library to view details</p>
+          </div>
+        )}
       </div>
     </div>
   );

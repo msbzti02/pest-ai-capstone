@@ -69,7 +69,7 @@ export const Analysis = sequelize.define('Analysis', {
   }
 });
 
-// Define the Feedback Model
+// Define the Feedback Model (Enhanced with prediction tracking)
 export const Feedback = sequelize.define('Feedback', {
   id: {
     type: DataTypes.UUID,
@@ -78,15 +78,35 @@ export const Feedback = sequelize.define('Feedback', {
   },
   rating: {
     type: DataTypes.INTEGER,
-    allowNull: false,
+    allowNull: true,
   },
   comment: {
     type: DataTypes.TEXT,
     allowNull: true,
+  },
+  predictionPest: {
+    type: DataTypes.STRING,
+    allowNull: true,
+  },
+  actualPest: {
+    type: DataTypes.STRING,
+    allowNull: true,
+  },
+  isCorrect: {
+    type: DataTypes.BOOLEAN,
+    allowNull: true,
+  },
+  confidence: {
+    type: DataTypes.FLOAT,
+    allowNull: true,
+  },
+  imageQualityNotes: {
+    type: DataTypes.STRING,
+    allowNull: true,
   }
 });
 
-// Define the Sighting Model for Outbreak Map
+// Define the Sighting Model for Outbreak Map (Enhanced)
 export const Sighting = sequelize.define('Sighting', {
   id: {
     type: DataTypes.UUID,
@@ -104,6 +124,107 @@ export const Sighting = sequelize.define('Sighting', {
   pestType: {
     type: DataTypes.STRING,
     allowNull: false,
+  },
+  count: {
+    type: DataTypes.INTEGER,
+    allowNull: true,
+    defaultValue: 1,
+  },
+  severity: {
+    type: DataTypes.STRING,
+    allowNull: true,
+    defaultValue: 'Medium',
+  },
+  region: {
+    type: DataTypes.STRING,
+    allowNull: true,
+  },
+  notes: {
+    type: DataTypes.TEXT,
+    allowNull: true,
+  }
+});
+
+// Define the TreatmentPlan Model
+export const TreatmentPlan = sequelize.define('TreatmentPlan', {
+  id: {
+    type: DataTypes.UUID,
+    defaultValue: DataTypes.UUIDV4,
+    primaryKey: true,
+  },
+  sessionId: {
+    type: DataTypes.STRING,
+    allowNull: true,
+  },
+  userId: {
+    type: DataTypes.UUID,
+    allowNull: true,
+  },
+  pestName: {
+    type: DataTypes.STRING,
+    allowNull: false,
+  },
+  crop: {
+    type: DataTypes.STRING,
+    allowNull: true,
+  },
+  fieldSizeHa: {
+    type: DataTypes.FLOAT,
+    allowNull: true,
+    defaultValue: 1,
+  },
+  status: {
+    type: DataTypes.STRING,
+    allowNull: false,
+    defaultValue: 'active', // active, completed, cancelled
+  },
+  startDate: {
+    type: DataTypes.DATE,
+    allowNull: false,
+    defaultValue: DataTypes.NOW,
+  },
+  steps: {
+    type: DataTypes.TEXT, // JSON stringified steps array
+    allowNull: true,
+  },
+  progress: {
+    type: DataTypes.INTEGER,
+    allowNull: false,
+    defaultValue: 0,
+  }
+});
+
+// Define the FarmerField Model
+export const FarmerField = sequelize.define('FarmerField', {
+  id: {
+    type: DataTypes.UUID,
+    defaultValue: DataTypes.UUIDV4,
+    primaryKey: true,
+  },
+  userId: {
+    type: DataTypes.UUID,
+    allowNull: true,
+  },
+  name: {
+    type: DataTypes.STRING,
+    allowNull: false,
+  },
+  lat: {
+    type: DataTypes.FLOAT,
+    allowNull: false,
+  },
+  lon: {
+    type: DataTypes.FLOAT,
+    allowNull: false,
+  },
+  crop: {
+    type: DataTypes.STRING,
+    allowNull: true,
+  },
+  areaHa: {
+    type: DataTypes.FLOAT,
+    allowNull: true,
+    defaultValue: 1,
   }
 });
 
@@ -115,6 +236,7 @@ export const initDB = async () => {
     // alter: true will update schema without dropping data
     await sequelize.sync({ alter: true });
     console.log('✅ Database models synchronized.');
+    console.log('✅ Models: User, Analysis, Feedback, Sighting, TreatmentPlan, FarmerField');
   } catch (error) {
     console.error('❌ Unable to connect to the database:', error);
   }

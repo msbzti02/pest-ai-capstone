@@ -1,199 +1,323 @@
+import { CloudRain, Wind, Thermometer, AlertCircle, MapPin, Calendar, CheckCircle2, ShieldAlert, Save } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import axios from 'axios';
-import { CloudRain, Wind, Thermometer, Droplets, CheckCircle2, AlertTriangle, XCircle, MapPin, Save, Cloud } from 'lucide-react';
 
 export default function SpraySafetyView() {
   const [weather, setWeather] = useState(null);
-  const [daily, setDaily] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const [forecast, setForecast] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [location, setLocation] = useState({ lat: 39.9208, lon: 32.8541 }); // Default Ankara
+  const [locInput, setLocInput] = useState('39.9208, 32.8541');
+  const [error, setError] = useState('');
   
-  // Inputs
-  const [lat, setLat] = useState('41.0');
-  const [lng, setLng] = useState('29.0');
+  const [fields, setFields] = useState([]);
+  const [selectedField, setSelectedField] = useState('custom');
+  const [saveSuccess, setSaveSuccess] = useState(false);
+
+  const fetchFields = async () => {
+    try {
+      const res = await axios.get('/api/fields');
+      const data = res.data;
+      setFields(data);
+      if (data && data.length > 0) {
+        const first = data[0];
+        setSelectedField(first.id.toString());
+        setLocation({ lat: first.lat, lon: first.lon });
+        setLocInput(`${first.lat}, ${first.lon}`);
+      }
+    } catch (err) {
+      console.error("Failed to fetch fields", err);
+    }
+  };
 
   useEffect(() => {
-    fetchWeather();
+    fetchFields();
   }, []);
 
   const fetchWeather = async () => {
     setLoading(true);
+    setError('');
     try {
-      // Fetch current and daily (7-day) forecast
-      const res = await axios.get(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lng}&current=temperature_2m,relative_humidity_2m,precipitation,wind_speed_10m,cloud_cover&daily=temperature_2m_max,wind_speed_10m_max,precipitation_sum&timezone=auto`);
-      setWeather(res.data.current);
-      setDaily(res.data.daily);
-      setError(null);
+      const [weatherRes, forecastRes] = await Promise.all([
+        axios.get(`/api/weather/${location.lat}/${location.lon}`),
+        axios.get(`/api/weather/forecast/${location.lat}/${location.lon}`)
+      ]);
+      setWeather(weatherRes.data);
+      setForecast(forecastRes.data);
     } catch (err) {
-      console.error("Weather API Error:", err);
-      setError("Failed to fetch live weather data. Check coordinates.");
+      setError('Failed to fetch weather data. Please try again.');
+      console.error(err);
     } finally {
       setLoading(false);
     }
   };
 
-  const handleCheck = (e) => {
-    e.preventDefault();
+  useEffect(() => {
     fetchWeather();
+  }, [location]);
+
+  const handleLocationSubmit = (e) => {
+    e.preventDefault();
+    const parts = locInput.split(',');
+    if (parts.length === 2) {
+      const lat = parseFloat(parts[0].trim());
+      const lon = parseFloat(parts[1].trim());
+      if (!isNaN(lat) && !isNaN(lon)) {
+        setLocation({ lat, lon });
+        return;
+      }
+    }
+    setError('Invalid coordinate format. Use: lat, lon (e.g., 39.9208, 32.8541)');
   };
 
-  if (loading && !weather) {
-    return (
-      <div className="h-full flex items-center justify-center">
-        <div className="animate-spin w-8 h-8 border-4 border-sky-500 border-t-transparent rounded-full" />
-      </div>
-    );
-  }
-
-  // Current safety logic
-  let isCurrentSafe = false;
-  if (weather) {
-    const temp = weather.temperature_2m;
-    const wind = weather.wind_speed_10m;
-    const rain = weather.precipitation;
-    isCurrentSafe = temp >= 10 && temp <= 25 && wind <= 15 && rain === 0;
-  }
+  const getSafetyBadge = (status) => {
+    switch (status) {
+      case 'EXCELLENT': return 'bg-emerald-500/20 text-emerald-400 border-emerald-500/30';
+      case 'ACCEPTABLE': return 'bg-blue-500/20 text-blue-400 border-blue-500/30';
+      case 'MARGINAL': return 'bg-amber-500/20 text-amber-400 border-amber-500/30';
+      default: return 'bg-red-500/20 text-red-400 border-red-500/30';
+    }
+  };
 
   return (
-    <div className="w-full max-w-5xl mx-auto space-y-6">
-      <div className="flex items-center gap-3 mb-6">
-        <Cloud className="w-6 h-6 text-foreground" />
-        <h2 className="text-xl font-bold text-foreground">Weather & Spray Safety</h2>
-      </div>
-
-      {/* Top Search Bar */}
-      <div className="glass-panel p-4 flex flex-wrap items-end gap-4 border border-border/50 bg-secondary/20">
-        <div className="space-y-1">
-          <label className="text-xs text-muted-foreground ml-1">Latitude</label>
-          <input 
-            type="text" 
-            value={lat} 
-            onChange={(e) => setLat(e.target.value)}
-            className="bg-background/50 border border-border/50 rounded-lg px-4 py-2 text-sm text-foreground focus:outline-none focus:border-sky-500 w-32"
-          />
-        </div>
-        <div className="space-y-1">
-          <label className="text-xs text-muted-foreground ml-1">Longitude</label>
-          <input 
-            type="text" 
-            value={lng} 
-            onChange={(e) => setLng(e.target.value)}
-            className="bg-background/50 border border-border/50 rounded-lg px-4 py-2 text-sm text-foreground focus:outline-none focus:border-sky-500 w-32"
-          />
+    <div className="w-full max-w-6xl mx-auto space-y-6">
+      {/* Header */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-4">
+        <div className="flex items-center gap-3">
+          <div className="p-3 bg-blue-500/20 rounded-xl">
+            <CloudRain className="w-6 h-6 text-blue-500" />
+          </div>
+          <div>
+            <h2 className="text-2xl font-bold text-foreground">Spray Safety & Weather</h2>
+            <p className="text-muted-foreground text-sm">FAO/WHO compliant spray condition assessment</p>
+          </div>
         </div>
         
-        <button onClick={handleCheck} className="px-5 py-2 bg-emerald-500 text-black font-bold rounded-lg hover:bg-emerald-400 transition flex items-center gap-2 text-sm h-[38px]">
-          Search
-        </button>
-        <button className="px-4 py-2 bg-secondary text-muted-foreground font-medium rounded-lg hover:bg-secondary/80 transition flex items-center gap-2 text-sm h-[38px]">
-          <MapPin className="w-4 h-4" /> My Location
-        </button>
-        <button className="px-4 py-2 border border-sky-500/30 text-sky-500 font-medium rounded-lg hover:bg-sky-500/10 transition flex items-center gap-2 text-sm h-[38px] ml-auto">
-          <Save className="w-4 h-4" /> Save
-        </button>
-        <span className="text-xs text-muted-foreground ml-4 mb-2">Auto-refresh in 4:56</span>
+        {/* Location Input & Fields Dropdown */}
+        <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2">
+          <select 
+            value={selectedField}
+            onChange={(e) => {
+              const val = e.target.value;
+              setSelectedField(val);
+              if (val !== 'custom') {
+                const field = fields.find(f => f.id === val);
+                if (field) {
+                  setLocation({ lat: field.lat, lon: field.lon });
+                  setLocInput(`${field.lat}, ${field.lon}`);
+                }
+              }
+            }}
+            className="px-4 py-2 bg-secondary/50 border border-border/50 rounded-lg text-sm text-foreground focus:outline-none focus:border-blue-500 appearance-none min-w-[200px]"
+          >
+            <option value="custom">Custom Coordinates</option>
+            {fields.map(f => (
+              <option key={f.id} value={f.id}>{f.name} ({f.lat.toFixed(2)}, {f.lon.toFixed(2)})</option>
+            ))}
+          </select>
+
+          {selectedField === 'custom' && (
+            <form onSubmit={handleLocationSubmit} className="flex items-center gap-2">
+              <div className="relative">
+                <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                <input 
+                  type="text" 
+                  value={locInput} 
+                  onChange={(e) => setLocInput(e.target.value)}
+                  className="pl-9 pr-4 py-2 bg-secondary/50 border border-border/50 rounded-lg text-sm text-foreground focus:outline-none focus:border-blue-500 w-48"
+                  placeholder="Lat, Lon"
+                />
+              </div>
+              <button type="submit" disabled={loading} className="px-4 py-2 bg-blue-500 text-white font-bold rounded-lg hover:bg-blue-600 transition disabled:opacity-50 text-sm">
+                Update
+              </button>
+            </form>
+          )}
+        </div>
       </div>
 
       {error && (
-        <div className="p-4 bg-destructive/10 text-destructive border border-destructive/20 rounded-xl text-center">
-          {error}
+        <div className="p-4 bg-red-500/10 border border-red-500/30 rounded-xl text-red-400 text-sm flex items-center gap-2">
+          <AlertCircle className="w-4 h-4" /> {error}
         </div>
       )}
 
-      {weather && (
-        <>
-          {/* Main Status */}
-          <div className="flex flex-col items-center justify-center py-6">
-            <div className={`px-6 py-2 rounded-full border-2 flex items-center gap-2 font-bold tracking-wide uppercase ${
-              isCurrentSafe ? 'bg-emerald-500/10 border-emerald-500 text-emerald-500' : 'bg-rose-500/10 border-rose-500 text-rose-500'
-            }`}>
-              {isCurrentSafe ? <CheckCircle2 className="w-5 h-5" /> : <XCircle className="w-5 h-5" />}
-              {isCurrentSafe ? 'SAFE TO SPRAY' : 'UNSAFE TO SPRAY'}
-            </div>
-            {/* Cloud icon decorative */}
-            <div className="mt-6 p-4 rounded-3xl bg-gradient-to-b from-sky-100 to-white shadow-[0_0_30px_rgba(255,255,255,0.2)]">
-              <Cloud className="w-10 h-10 text-sky-500 fill-sky-200" />
-            </div>
-          </div>
-
-          {/* Current Metrics Grid */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            <div className="glass-panel p-6 flex flex-col items-center text-center justify-center relative overflow-hidden group">
-              <Thermometer className="w-8 h-8 text-rose-400 mb-3" />
-              <span className="text-3xl font-bold text-foreground">{weather.temperature_2m}°C</span>
-              <span className="text-[10px] uppercase font-bold tracking-widest text-muted-foreground mt-2">TEMP</span>
-            </div>
-            <div className="glass-panel p-6 flex flex-col items-center text-center justify-center">
-              <Droplets className="w-8 h-8 text-sky-400 mb-3" />
-              <span className="text-3xl font-bold text-foreground">{weather.relative_humidity_2m}%</span>
-              <span className="text-[10px] uppercase font-bold tracking-widest text-muted-foreground mt-2">HUMIDITY</span>
-            </div>
-            <div className="glass-panel p-6 flex flex-col items-center text-center justify-center">
-              <Wind className="w-8 h-8 text-slate-300 mb-3" />
-              <span className="text-3xl font-bold text-foreground">{weather.wind_speed_10m}</span>
-              <span className="text-[10px] uppercase font-bold tracking-widest text-muted-foreground mt-2">WIND km/h</span>
-            </div>
-            <div className="glass-panel p-6 flex flex-col items-center text-center justify-center">
-              <CloudRain className="w-8 h-8 text-indigo-400 mb-3" />
-              <span className="text-3xl font-bold text-foreground">{weather.precipitation}</span>
-              <span className="text-[10px] uppercase font-bold tracking-widest text-muted-foreground mt-2">RAIN mm</span>
-            </div>
-          </div>
-
-          <div className="p-3 bg-amber-500/10 border border-amber-500/30 rounded-lg text-xs text-amber-500 flex items-center gap-2">
-            <AlertTriangle className="w-4 h-4 shrink-0" />
-            Weather data reflects broad regional forecasts. Actual field conditions (fog, local frost, microclimates) may differ. Always verify conditions on-site before applying pesticides.
-          </div>
-
-          {/* 7-Day Calendar */}
-          {daily && (
-            <div className="glass-panel p-5 border border-border/50">
-              <h3 className="text-sm font-bold text-foreground mb-4 flex items-center gap-2">
-                <CloudRain className="w-4 h-4" /> 7-Day Spray Calendar
-              </h3>
+      {loading && !weather ? (
+        <div className="h-64 flex items-center justify-center">
+          <div className="animate-spin w-8 h-8 border-4 border-blue-500 border-t-transparent rounded-full" />
+        </div>
+      ) : weather && forecast ? (
+        <div className="space-y-6">
+          {/* Current Conditions */}
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            
+            {/* Safety Assessment Card */}
+            <div className="lg:col-span-2 glass-panel p-6 relative overflow-hidden">
+              <div className="absolute top-0 right-0 p-6 opacity-10">
+                <ShieldAlert className="w-32 h-32" />
+              </div>
               
-              <div className="grid grid-cols-2 md:grid-cols-7 gap-2">
-                {daily.time.map((time, idx) => {
-                  const date = new Date(time);
-                  const isToday = idx === 0;
-                  const dayName = isToday ? 'Today' : date.toLocaleDateString('en-US', { weekday: 'short' });
-                  const dateString = date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
-                  
-                  const dTemp = daily.temperature_2m_max[idx];
-                  const dWind = daily.wind_speed_10m_max[idx];
-                  const dRain = daily.precipitation_sum[idx];
-                  
-                  const isSafe = dTemp >= 10 && dTemp <= 25 && dWind <= 15 && dRain === 0;
+              <div className="flex justify-between items-start mb-6">
+                <div>
+                  <h3 className="text-lg font-bold text-foreground mb-1">Current Spray Safety</h3>
+                  {weather.region && (
+                    <p className="text-sm text-muted-foreground flex items-center gap-1">
+                      <MapPin className="w-3 h-3" /> {weather.region.region.replace('_', ' ').toUpperCase()} Region
+                    </p>
+                  )}
+                </div>
+                <div className={`px-4 py-2 rounded-xl border-2 font-bold tracking-wider ${getSafetyBadge(weather.spray_safety.status)}`}>
+                  {weather.spray_safety.status} ({weather.spray_safety.score}/100)
+                </div>
+              </div>
 
-                  return (
-                    <div key={time} className={`p-4 rounded-xl flex flex-col items-center text-center border transition-colors ${
-                      isSafe ? 'bg-emerald-950/40 border-emerald-500/30' : 'bg-rose-950/20 border-rose-500/20'
-                    }`}>
-                      <span className="text-xs font-bold text-foreground mb-1">{dayName}</span>
-                      <span className="text-[9px] text-muted-foreground mb-3">{dateString}</span>
-                      
-                      <div className={`p-1.5 rounded-md mb-2 ${isSafe ? 'bg-emerald-500 text-black' : 'bg-rose-500 text-white'}`}>
-                        {isSafe ? <CheckCircle2 className="w-4 h-4" /> : <XCircle className="w-4 h-4" />}
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-6">
+                <div className="bg-secondary/30 rounded-xl p-4 text-center border border-border/20">
+                  <Thermometer className="w-5 h-5 mx-auto mb-2 text-rose-400" />
+                  <p className="text-2xl font-bold text-foreground">{weather.current.temperature}°C</p>
+                  <p className="text-[10px] text-muted-foreground uppercase tracking-wider">Temperature</p>
+                </div>
+                <div className="bg-secondary/30 rounded-xl p-4 text-center border border-border/20">
+                  <Wind className="w-5 h-5 mx-auto mb-2 text-cyan-400" />
+                  <p className="text-2xl font-bold text-foreground">{weather.current.wind_speed}</p>
+                  <p className="text-[10px] text-muted-foreground uppercase tracking-wider">km/h Wind</p>
+                </div>
+                <div className="bg-secondary/30 rounded-xl p-4 text-center border border-border/20">
+                  <CloudRain className="w-5 h-5 mx-auto mb-2 text-blue-400" />
+                  <p className="text-2xl font-bold text-foreground">{weather.current.precipitation}mm</p>
+                  <p className="text-[10px] text-muted-foreground uppercase tracking-wider">Rainfall</p>
+                </div>
+                <div className="bg-secondary/30 rounded-xl p-4 text-center border border-border/20">
+                  <CloudRain className="w-5 h-5 mx-auto mb-2 text-emerald-400 opacity-60" />
+                  <p className="text-2xl font-bold text-foreground">{weather.current.humidity}%</p>
+                  <p className="text-[10px] text-muted-foreground uppercase tracking-wider">Humidity</p>
+                </div>
+              </div>
+
+              {/* Safety Issues List */}
+              {weather.spray_safety.issues.length > 0 ? (
+                <div className="space-y-2">
+                  <h4 className="text-sm font-bold text-muted-foreground mb-2 flex items-center gap-2">
+                    <AlertCircle className="w-4 h-4 text-amber-500" /> Assessment Flags
+                  </h4>
+                  {weather.spray_safety.issues.map((issue, idx) => (
+                    <div key={idx} className="flex items-start gap-2 text-sm bg-red-500/10 border border-red-500/20 p-3 rounded-lg text-red-200">
+                      <span>•</span>
+                      <span>{issue}</span>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <div className="flex items-center gap-2 text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 p-4 rounded-lg">
+                  <CheckCircle2 className="w-5 h-5" />
+                  <span className="font-medium">Conditions are optimal for chemical application. Proceed with normal precautions.</span>
+                </div>
+              )}
+              
+              {weather.region && (
+                <div className="mt-4 text-xs text-muted-foreground p-3 bg-secondary/20 rounded-lg">
+                  <strong>Regional Note:</strong> {weather.region.risk_note}
+                </div>
+              )}
+            </div>
+
+            {/* Recommendations / Sidebar */}
+            <div className="glass-panel p-6 space-y-6">
+              <div>
+                <h3 className="text-sm font-bold text-foreground mb-3 flex items-center gap-2">
+                  <Calendar className="w-4 h-4 text-blue-500" /> 7-Day Outlook
+                </h3>
+                <div className="flex justify-between items-center p-3 bg-secondary/30 rounded-lg border border-border/20">
+                  <div>
+                    <p className="text-2xl font-bold text-emerald-400">{forecast.summary.safe_days}</p>
+                    <p className="text-[10px] text-muted-foreground uppercase">Safe Days</p>
+                  </div>
+                  <div className="text-right">
+                    <p className="text-2xl font-bold text-red-400">{forecast.summary.unsafe_days}</p>
+                    <p className="text-[10px] text-muted-foreground uppercase">Unsafe Days</p>
+                  </div>
+                </div>
+              </div>
+              
+              <div>
+                <h3 className="text-sm font-bold text-foreground mb-3">Best Upcoming Day</h3>
+                {forecast.summary.best_day ? (
+                  <div className="p-4 rounded-xl border border-emerald-500/30 bg-emerald-500/10 text-center">
+                    <p className="text-lg font-bold text-emerald-400 mb-1">{forecast.summary.best_day.day_name}, {new Date(forecast.summary.best_day.date).toLocaleDateString()}</p>
+                    <p className="text-xs text-muted-foreground">Score: {forecast.summary.best_day.spray_safety.score}/100</p>
+                  </div>
+                ) : (
+                  <p className="text-xs text-muted-foreground">No safe days found in forecast.</p>
+                )}
+              </div>
+              <button 
+                onClick={async () => {
+                  try {
+                    await axios.post('/api/fields', {
+                      name: `New Field (${location.lat.toFixed(2)}, ${location.lon.toFixed(2)})`,
+                      lat: location.lat,
+                      lon: location.lon,
+                      crop: 'wheat',
+                      areaHa: 10
+                    });
+                    setSaveSuccess(true);
+                    fetchFields();
+                    setTimeout(() => setSaveSuccess(false), 3000);
+                  } catch (err) {
+                    console.error(err);
+                    setError('Failed to save field');
+                  }
+                }}
+                disabled={saveSuccess || selectedField !== 'custom'}
+                className="w-full py-3 flex justify-center items-center gap-2 bg-secondary hover:bg-secondary/80 border border-border/50 text-foreground text-sm font-bold rounded-xl transition disabled:opacity-50"
+              >
+                {saveSuccess ? <><CheckCircle2 className="w-4 h-4 text-emerald-400" /> Saved to Fields!</> : '+ Save to My Fields'}
+              </button>
+            </div>
+          </div>
+
+          {/* 7-Day Forecast Grid */}
+          <div className="glass-panel p-6">
+            <h3 className="text-sm font-bold text-foreground mb-4">Detailed 7-Day Forecast</h3>
+            <div className="overflow-x-auto">
+              <div className="min-w-[800px] grid grid-cols-7 gap-3">
+                {forecast.forecast.map((day, idx) => (
+                  <div key={idx} className={`p-4 rounded-xl border flex flex-col items-center text-center ${
+                    day.spray_safety.is_safe ? 'bg-emerald-500/5 border-emerald-500/20' : 'bg-red-500/5 border-red-500/20'
+                  }`}>
+                    <p className="font-bold text-foreground text-sm mb-1">{day.day_name}</p>
+                    <p className="text-[10px] text-muted-foreground mb-3">{new Date(day.date).toLocaleDateString(undefined, {month:'short', day:'numeric'})}</p>
+                    
+                    <div className="space-y-2 w-full">
+                      <div className="flex justify-between text-xs">
+                        <span className="text-muted-foreground">Max Temp</span>
+                        <span className="font-medium">{day.temperature.max}°C</span>
                       </div>
-                      
-                      <span className={`text-[10px] font-bold uppercase tracking-wider mb-3 ${isSafe ? 'text-emerald-400' : 'text-rose-400'}`}>
-                        {isSafe ? 'SAFE' : 'UNSAFE'}
-                      </span>
-                      
-                      <div className="flex items-center gap-1 text-[9px] text-muted-foreground mt-auto">
-                        <Thermometer className="w-2.5 h-2.5" /> {dTemp}°C
+                      <div className="flex justify-between text-xs">
+                        <span className="text-muted-foreground">Wind</span>
+                        <span className="font-medium">{day.wind_speed_max} km/h</span>
                       </div>
-                      <div className="flex items-center gap-1 text-[9px] text-muted-foreground mt-0.5">
-                        <Wind className="w-2.5 h-2.5" /> {dWind} km/h
+                      <div className="flex justify-between text-xs">
+                        <span className="text-muted-foreground">Rain</span>
+                        <span className="font-medium">{day.precipitation}mm</span>
                       </div>
                     </div>
-                  );
-                })}
+                    
+                    <div className="mt-4 pt-4 border-t border-border/30 w-full">
+                      <span className={`text-xs font-bold px-2 py-1 rounded w-full block ${
+                        day.spray_safety.is_safe ? 'bg-emerald-500/20 text-emerald-400' : 'bg-red-500/20 text-red-400'
+                      }`}>
+                        {day.spray_safety.status}
+                      </span>
+                    </div>
+                  </div>
+                ))}
               </div>
             </div>
-          )}
-        </>
-      )}
+          </div>
+          
+        </div>
+      ) : null}
     </div>
   );
 }

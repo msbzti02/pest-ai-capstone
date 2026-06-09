@@ -21,7 +21,11 @@ import CompareView from './components/views/CompareView';
 import EconomicView from './components/views/EconomicView';
 import FeedbackView from './components/views/FeedbackView';
 import ApiDocsView from './components/views/ApiDocsView';
-
+import TreatmentView from './components/views/TreatmentView';
+import FieldsView from './components/views/FieldsView';
+import RiskScoreView from './components/views/RiskScoreView';
+import LifecycleView from './components/views/LifecycleView';
+import ChatView from './components/views/ChatView';
 function App() {
   const { user, setAuthModalOpen } = useAuth();
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -274,6 +278,11 @@ function App() {
           {activeView === 'economic' && <EconomicView />}
           {activeView === 'feedback' && <FeedbackView />}
           {activeView === 'api' && <ApiDocsView />}
+          {activeView === 'treatment' && <TreatmentView />}
+          {activeView === 'fields' && <FieldsView />}
+          {activeView === 'risk' && <RiskScoreView />}
+          {activeView === 'lifecycle' && <LifecycleView />}
+          {activeView === 'chat' && <ChatView />}
         </main>
 
         {/* Floating Chatbot Widget */}

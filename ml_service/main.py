@@ -106,7 +106,8 @@ def get_model(model_name: str, is_quantized: bool = False):
             model.load_state_dict(state_dict)
             print(f"[+] Loaded weights from {model_path}")
         else:
-            print(f"[!] Warning: Model weights not found at {model_path}. Using uninitialized model.")
+            print(f"[!] Warning: Model weights not found at {model_path}. Returning Mock Data.")
+            return None
             
         # 2. Apply Dynamic Quantization AFTER loading weights
         if is_quantized:
@@ -164,7 +165,34 @@ async def predict(
         input_tensor = transform(img_resized).unsqueeze(0)
         
         model = get_model(model_name, is_quantized=is_q)
+        original_b64 = array_to_base64(img_resized)
         
+        if model is None:
+            # --- MOCK DETECTION MODE (when .pth is missing) ---
+            print("[*] No weights found: Generating mock ML prediction for testing UI.")
+            return {
+                "top_prediction": {
+                    "class_id": 21,
+                    "label": "Army Worm",
+                    "confidence": 98.7
+                },
+                "predictions": [
+                    {"class_id": 21, "label": "Army Worm", "confidence": 98.7},
+                    {"class_id": 22, "label": "Beet Army Worm", "confidence": 0.8},
+                    {"class_id": 18, "label": "Black Cutworm", "confidence": 0.5}
+                ],
+                "images": {
+                    "original": original_b64,
+                    "gradcam": None,
+                    "lime": None,
+                    "shap": None
+                },
+                "execution_time_ms": 120,
+                "is_quantized": False,
+                "model_name": model_name + " (MOCK)",
+                "mock_mode": True
+            }
+
         with torch.no_grad():
             outputs = model(input_tensor)
             probs = torch.nn.functional.softmax(outputs[0], dim=0)
@@ -319,4 +347,6 @@ async def predict(
 
 if __name__ == "__main__":
     import uvicorn
-    uvicorn.run("main:app", host="0.0.0.0", port=8000, reload=True)
+    import os
+    port = int(os.environ.get("PORT", 8000))
+    uvicorn.run("main:app", host="0.0.0.0", port=port, reload=True)

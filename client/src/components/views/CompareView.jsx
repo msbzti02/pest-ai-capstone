@@ -32,6 +32,18 @@ export default function CompareView() {
               <span className="font-mono font-bold text-foreground">18 MB</span>
             </div>
             <div className="flex justify-between items-center pb-2 border-b border-border/50">
+              <span className="text-sm text-foreground/80">Recommended CPU</span>
+              <span className="font-mono font-bold text-foreground">ARM Cortex-A / Snapdragon</span>
+            </div>
+            <div className="flex justify-between items-center pb-2 border-b border-border/50">
+              <span className="text-sm text-foreground/80">GPU Acceleration</span>
+              <span className="font-mono font-bold text-emerald-400">Optional (NPU Supported)</span>
+            </div>
+            <div className="flex justify-between items-center pb-2 border-b border-border/50">
+              <span className="text-sm text-foreground/80">Est. Power Draw</span>
+              <span className="font-mono font-bold text-foreground text-emerald-400">~2-5W (Mobile/Edge)</span>
+            </div>
+            <div className="flex justify-between items-center pb-2 border-b border-border/50">
               <span className="text-sm text-foreground/80">Mobile Ready</span>
               <Check className="w-4 h-4 text-emerald-500" />
             </div>
@@ -60,6 +72,18 @@ export default function CompareView() {
             <div className="flex justify-between items-center pb-2 border-b border-border/50">
               <span className="text-sm text-foreground/80">Memory Footprint</span>
               <span className="font-mono font-bold text-foreground">340 MB</span>
+            </div>
+            <div className="flex justify-between items-center pb-2 border-b border-border/50">
+              <span className="text-sm text-foreground/80">Recommended CPU</span>
+              <span className="font-mono font-bold text-foreground">8-Core Intel/AMD</span>
+            </div>
+            <div className="flex justify-between items-center pb-2 border-b border-border/50">
+              <span className="text-sm text-foreground/80">GPU Acceleration</span>
+              <span className="font-mono font-bold text-violet-400">Required (NVIDIA)</span>
+            </div>
+            <div className="flex justify-between items-center pb-2 border-b border-border/50">
+              <span className="text-sm text-foreground/80">Est. Power Draw</span>
+              <span className="font-mono font-bold text-foreground text-red-400">~250W (Desktop)</span>
             </div>
             <div className="flex justify-between items-center pb-2 border-b border-border/50">
               <span className="text-sm text-foreground/80">Mobile Ready</span>

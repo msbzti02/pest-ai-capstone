@@ -1,11 +1,35 @@
-import { useRef } from 'react';
+import { useRef, useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { UploadCloud, Image as ImageIcon, Loader2 } from 'lucide-react';
+import { UploadCloud, Image as ImageIcon, Loader2, AlertTriangle, CheckCircle2 } from 'lucide-react';
 import { useAuth } from '../../contexts/AuthContext';
+import axios from 'axios';
 
 export function UploadZone({ file, previewUrl, loading, onFileChange, onAnalyze }) {
   const fileInputRef = useRef(null);
   const { user, setAuthModalOpen } = useAuth();
+  const [quality, setQuality] = useState(null);
+  const [checkingQuality, setCheckingQuality] = useState(false);
+
+  useEffect(() => {
+    const checkQuality = async () => {
+      if (!file) {
+        setQuality(null);
+        return;
+      }
+      setCheckingQuality(true);
+      try {
+        const formData = new FormData();
+        formData.append('file', file);
+        const res = await axios.post('/api/image-quality', formData);
+        setQuality(res.data);
+      } catch (err) {
+        console.error('Image quality check failed', err);
+      } finally {
+        setCheckingQuality(false);
+      }
+    };
+    checkQuality();
+  }, [file]);
 
   const handleZoneClick = () => {
     if (!user) {
@@ -62,6 +86,31 @@ export function UploadZone({ file, previewUrl, loading, onFileChange, onAnalyze 
           <>
             <img src={previewUrl} alt="Preview" className="w-full h-full object-cover opacity-90" />
             <div className="absolute inset-0 bg-gradient-to-t from-background/90 via-background/20 to-transparent flex flex-col justify-end p-6">
+              
+              {/* Image Quality Overlay */}
+              {checkingQuality ? (
+                <div className="flex items-center gap-2 text-sm text-muted-foreground bg-background/80 backdrop-blur w-fit px-3 py-1.5 rounded-lg border border-border/50">
+                  <Loader2 className="w-3 h-3 animate-spin" /> Checking quality...
+                </div>
+              ) : quality ? (
+                <div className={`w-fit px-3 py-2 rounded-lg border backdrop-blur text-xs flex flex-col gap-1 ${
+                  quality.score >= 80 ? 'bg-emerald-500/20 border-emerald-500/50 text-emerald-400' :
+                  quality.score >= 60 ? 'bg-blue-500/20 border-blue-500/50 text-blue-400' :
+                  quality.score >= 40 ? 'bg-amber-500/20 border-amber-500/50 text-amber-400' :
+                  'bg-red-500/20 border-red-500/50 text-red-400'
+                }`}>
+                  <div className="flex items-center gap-2 font-bold">
+                    {quality.score >= 60 ? <CheckCircle2 className="w-4 h-4" /> : <AlertTriangle className="w-4 h-4" />}
+                    Quality Score: {quality.score}/100 ({quality.grade})
+                  </div>
+                  {quality.issues?.length > 0 && (
+                    <div className="mt-1 space-y-0.5">
+                      {quality.issues.map((iss, i) => <div key={i}>• {iss}</div>)}
+                    </div>
+                  )}
+                </div>
+              ) : null}
+
               <button 
                 onClick={(e) => {
                   e.stopPropagation();

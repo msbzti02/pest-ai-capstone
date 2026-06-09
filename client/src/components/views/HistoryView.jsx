@@ -44,10 +44,13 @@ export default function HistoryView() {
     );
   }
 
-  const filteredHistory = history.filter(item => 
-    item.label.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    (item.location && item.location.toLowerCase().includes(searchTerm.toLowerCase()))
-  );
+  const filteredHistory = history.filter(item => {
+    const s = searchTerm.toLowerCase();
+    const labelMatch = item.label?.toLowerCase().includes(s);
+    const locationMatch = item.location?.toLowerCase().includes(s);
+    const modelMatch = item.modelName?.toLowerCase().includes(s);
+    return labelMatch || locationMatch || modelMatch;
+  });
 
   return (
     <div className="w-full max-w-5xl mx-auto space-y-6">
@@ -101,12 +104,7 @@ export default function HistoryView() {
                     </td>
                     <td className="px-6 py-4">
                       <div className="flex items-center gap-2">
-                        {item.confidence > 0.8 ? (
-                          <CheckCircle2 className="w-4 h-4 text-emerald-500" />
-                        ) : (
-                          <AlertTriangle className="w-4 h-4 text-amber-500" />
-                        )}
-                        <span className="font-mono">{(item.confidence * 100).toFixed(1)}%</span>
+                        <span className="font-mono">{item.confidence.toFixed(1)}%</span>
                       </div>
                     </td>
                     <td className="px-6 py-4">
