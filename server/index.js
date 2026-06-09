@@ -213,7 +213,7 @@ const chatSessions = new Map();
 const MAX_SESSION_MESSAGES = 20;
 
 // Health check
-app.get('/', (req, res) => {
+app.get('/health', (req, res) => {
   res.send('PestAI API Gateway is running.');
 });
 
