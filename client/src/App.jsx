@@ -2,6 +2,7 @@ import { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { MessageCircle, X, Lock } from 'lucide-react';
 import axios from 'axios';
+import html2pdf from 'html2pdf.js';
 import { useAuth } from './contexts/AuthContext';
 import { jsPDF } from 'jspdf';
 import { UploadZone } from './components/ui/UploadZone';
@@ -105,31 +106,74 @@ function App() {
 
   const exportPdf = () => {
     if (!results) return;
-    const doc = new jsPDF();
-    
-    doc.setFontSize(22);
-    doc.setTextColor(16, 185, 129); // Primary color
-    doc.text('PestAI Diagnostic Report', 20, 20);
-    
-    doc.setFontSize(12);
-    doc.setTextColor(40, 40, 40);
-    doc.text(`Date: ${new Date().toLocaleString()}`, 20, 30);
-    doc.text(`Model: ${modelName.toUpperCase()} ${isQuantized ? '(INT8 Edge Mode)' : ''}`, 20, 40);
-    
-    doc.setFontSize(16);
-    doc.text('Results:', 20, 55);
-    
-    let yPos = 65;
-    results.predictions.forEach((pred, index) => {
-      doc.setFontSize(14);
-      doc.text(`${index + 1}. ${pred.label} - ${(pred.confidence * 100).toFixed(1)}%`, 25, yPos);
-      yPos += 10;
-    });
 
-    doc.setFontSize(12);
-    doc.text(`LIME Samples: ${limeSamples} | Features: ${limeFeatures}`, 20, yPos + 10);
+    const dateStr = new Date().toLocaleString();
+    const primaryLabel = results.predictions[0]?.label || 'Unknown';
+    const confidence = results.predictions[0]?.confidence || 0;
     
-    doc.save('pestai-report.pdf');
+    // Extract contents if they exist
+    const treatmentHtml = document.getElementById('treatment-content')?.innerHTML || '<p><em>No treatment protocol generated or still loading.</em></p>';
+    const biologyHtml = document.getElementById('biology-content')?.innerHTML || '<p><em>No biological data generated or still loading.</em></p>';
+    
+    // Build predictions list
+    const predictionsHtml = results.predictions.map((p, i) => `
+      <tr style="border-bottom: 1px solid #e5e7eb;">
+        <td style="padding: 10px 0;">${i + 1}. ${p.label}</td>
+        <td style="padding: 10px 0; text-align: right; font-family: monospace;">${(p.confidence).toFixed(1)}%</td>
+      </tr>
+    `).join('');
+
+    const html = `
+      <div style="font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; padding: 40px; color: #1f2937; max-width: 800px; margin: auto; line-height: 1.6; background: white;">
+        <div style="border-bottom: 3px solid #10b981; padding-bottom: 20px; margin-bottom: 30px;">
+          <h1 style="color: #10b981; margin: 0 0 10px 0; font-size: 28px;">PestAI Diagnostic Report</h1>
+          <p style="margin: 0; color: #6b7280; font-size: 14px;">Date: ${dateStr}</p>
+          <p style="margin: 5px 0 0 0; color: #6b7280; font-size: 14px;">Model: EFFICIENTNET ${isQuantized ? '(INT8 Edge Mode)' : ''}</p>
+        </div>
+        
+        <div style="margin-bottom: 40px;">
+          <h2 style="color: #374151; font-size: 20px; margin-bottom: 15px; border-bottom: 1px solid #e5e7eb; padding-bottom: 5px;">Primary Diagnosis</h2>
+          <div style="background-color: #ecfdf5; padding: 20px; border-radius: 8px; border: 1px solid #a7f3d0;">
+            <h3 style="margin: 0; color: #047857; font-size: 24px;">${primaryLabel}</h3>
+            <p style="margin: 5px 0 0 0; color: #065f46; font-size: 16px;">Confidence: <strong>${confidence.toFixed(1)}%</strong></p>
+          </div>
+        </div>
+
+        <div style="margin-bottom: 40px;">
+          <h2 style="color: #374151; font-size: 20px; margin-bottom: 15px; border-bottom: 1px solid #e5e7eb; padding-bottom: 5px;">Detection Probabilities</h2>
+          <table style="width: 100%; border-collapse: collapse; font-size: 14px;">
+            <tbody>
+              ${predictionsHtml}
+            </tbody>
+          </table>
+          <p style="margin-top: 15px; font-size: 12px; color: #9ca3af;">LIME Samples: ${limeSamples} | Features: ${limeFeatures}</p>
+        </div>
+        
+        <div style="margin-bottom: 40px;">
+          <h2 style="color: #374151; font-size: 20px; margin-bottom: 15px; border-bottom: 1px solid #e5e7eb; padding-bottom: 5px;">AI Treatment Protocol</h2>
+          <div style="font-size: 14px; color: #4b5563;">
+            ${treatmentHtml}
+          </div>
+        </div>
+        
+        <div style="margin-bottom: 40px;">
+          <h2 style="color: #374151; font-size: 20px; margin-bottom: 15px; border-bottom: 1px solid #e5e7eb; padding-bottom: 5px;">Biological Information Database</h2>
+          <div style="font-size: 14px; color: #4b5563;">
+            ${biologyHtml}
+          </div>
+        </div>
+      </div>
+    `;
+
+    const opt = {
+      margin:       10,
+      filename:     `PestAI_Diagnostic_Report_${new Date().getTime()}.pdf`,
+      image:        { type: 'jpeg', quality: 0.98 },
+      html2canvas:  { scale: 2, useCORS: true, backgroundColor: '#ffffff' },
+      jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
+    };
+    
+    html2pdf().set(opt).from(html).save();
   };
 
   return (

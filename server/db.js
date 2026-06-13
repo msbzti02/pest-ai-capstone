@@ -66,6 +66,10 @@ export const Analysis = sequelize.define('Analysis', {
     type: DataTypes.STRING,
     allowNull: true,
     defaultValue: 'Unknown',
+  },
+  treatment: {
+    type: DataTypes.TEXT,
+    allowNull: true,
   }
 });
 
@@ -182,6 +186,10 @@ export const TreatmentPlan = sequelize.define('TreatmentPlan', {
     type: DataTypes.DATE,
     allowNull: false,
     defaultValue: DataTypes.NOW,
+  },
+  customProtocol: {
+    type: DataTypes.TEXT,
+    allowNull: true,
   },
   steps: {
     type: DataTypes.TEXT, // JSON stringified steps array

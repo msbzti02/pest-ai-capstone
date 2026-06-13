@@ -115,31 +115,31 @@ export function XAIDashboard({ images }) {
       {/* Explanations Section */}
       <div className="mt-8 space-y-3">
         <CollapsibleExplanation 
-          title="Grad-CAM Nasıl Çalışır?" 
+          title="How Grad-CAM Works?" 
           isOpen={openInfo === 'gradcam'} 
           onToggle={() => setOpenInfo(openInfo === 'gradcam' ? null : 'gradcam')}
         >
-          <strong>Grad-CAM (Gradient-weighted Class Activation Mapping)</strong>, yapay zekanın teşhisi koyarken yaprağın hangi kısımlarına odaklandığını gösteren bir ısı haritasıdır (heatmap). 
-          Kırmızı ve sarı alanlar modelin kararı verirken en çok ağırlık verdiği yerleri temsil ederken, mavi alanlar daha az dikkate alınan bölgelerdir.
+          <strong>Grad-CAM (Gradient-weighted Class Activation Mapping)</strong> is a heatmap that shows which parts of the leaf the AI focused on while making a diagnosis. 
+          Red and yellow areas represent the regions the model weighted most heavily in its decision, while blue areas represent less considered regions.
         </CollapsibleExplanation>
 
         <CollapsibleExplanation 
-          title="LIME Nasıl Çalışır?" 
+          title="How LIME Works?" 
           isOpen={openInfo === 'lime'} 
           onToggle={() => setOpenInfo(openInfo === 'lime' ? null : 'lime')}
         >
-          <strong>LIME (Local Interpretable Model-agnostic Explanations)</strong>, resmi küçük parçalara (süperpiksellere) böler. 
-          Yeşil yanan kısımlar, mevcut hastalık teşhisini destekleyen alanlardır. 
-          Kırmızı yanan kısımlar ise o teşhise karşı (başka bir hastalık olabileceğini gösteren) alanlardır.
+          <strong>LIME (Local Interpretable Model-agnostic Explanations)</strong> divides the image into small segments (superpixels). 
+          The areas highlighted in green support the current disease diagnosis. 
+          The areas highlighted in red contradict that diagnosis (indicating it might be a different disease).
         </CollapsibleExplanation>
 
         <CollapsibleExplanation 
-          title="SHAP Nasıl Çalışır?" 
+          title="How SHAP Works?" 
           isOpen={openInfo === 'shap'} 
           onToggle={() => setOpenInfo(openInfo === 'shap' ? null : 'shap')}
         >
-          <strong>SHAP (SHapley Additive exPlanations)</strong>, oyun teorisine dayanır. Yapay zekanın sonucunu hesaplarken hangi pikselin skoru ne kadar artırdığını veya azalttığını gösterir. 
-          Pembe/Kırmızı pikseller tahmin ihtimalini artıran (hastalık belirtisi), Mavi pikseller ise tahmin ihtimalini düşüren (sağlıklı doku veya alakasız bölge) yerleri gösterir. Yeni güncellemeyle böcek veya yaprak şeklini organik olarak (inpaint-telea) korur.
+          <strong>SHAP (SHapley Additive exPlanations)</strong> is based on game theory. It shows how much each pixel increases or decreases the score when calculating the AI's result. 
+          Pink/Red pixels show areas that increase the probability of the prediction (disease symptom), while Blue pixels show areas that decrease the probability (healthy tissue or irrelevant region). The new update preserves the insect or leaf shape organically (inpaint-telea).
         </CollapsibleExplanation>
       </div>
 

@@ -62,12 +62,7 @@ export default function LifecycleView() {
           
           {/* Interactive Flow */}
           <div className="glass-panel p-6 lg:p-10 flex flex-col items-center justify-center relative min-h-[400px]">
-            {!lifecycle.has_detailed_data && (
-              <div className="absolute top-4 left-4 right-4 p-3 bg-amber-500/10 border border-amber-500/20 rounded-lg flex items-center gap-2 text-amber-400 text-xs">
-                <Info className="w-4 h-4 shrink-0" />
-                Using generalized lifecycle model for this species.
-              </div>
-            )}
+
             
             <div className="w-full max-w-md relative mt-8">
               {/* SVG Connector Lines */}

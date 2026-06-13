@@ -46,6 +46,8 @@
 //  KNOWLEDGE CHUNKS — 4,766+ entries
 // ═══════════════════════════════════════════════════════
 
+import { IP102_KNOWLEDGE } from './ip102_rag.js';
+
 const KNOWLEDGE_BASE = [
 
   // ────────────────────────────────────────────────────
@@ -262,6 +264,9 @@ const KNOWLEDGE_BASE = [
   { id: 'custom-beetfly-001', category: 'Beet Pests', topic: 'Beet Fly (Pegomya betae)', keywords: ['beet', 'fly', 'pegomya', 'betae', 'hyoscyami', 'mine', 'blister'], content: 'Beet Fly (Pegomya betae / Pegomya hyoscyami): Small grey fly that lays eggs on the leaf undersurface. Larvae mine between leaf surfaces creating blisters and blotches, causing 15-30% yield loss in sugar beet. Treat when >50% of plants have mines on cotyledons. Chemical control: Imidacloprid/clothianidin seed treatments or Dimethoate/deltamethrin foliar sprays at larval emergence. Biological: Opius pallipes parasitoid wasps. Cultural: Remove weed hosts like Chenopodium and early sowing for vigorous seedlings.', source: 'pest_management_wheat_beet.txt' },
   { id: 'custom-sugarborer-001', category: 'Sugarcane Pests', topic: 'Sugarcane Borer (Diatraea saccharalis)', keywords: ['sugarcane', 'borer', 'diatraea', 'saccharalis', 'stem', 'sucrose'], content: 'Sugarcane Borer (Diatraea saccharalis): Moth larvae bore into internal stems, killing the growing point and reducing sucrose content. Yield loss 10-20%. Chemical control includes Chlorantraniliprole or Tebufenozide, but has limited effectiveness once larvae enter the stem. Biological control is the primary strategy worldwide: release Cotesia flavipes or Trichogramma galloi (100,000-200,000/ha). Cultural control: use clean seed cane, harvest at ground level, and destroy stubble.', source: 'pest_management_wheat_beet.txt' }
 ];
+
+// Append dynamically generated IP102 treatments
+KNOWLEDGE_BASE.push(...IP102_KNOWLEDGE);
 
 // ═══════════════════════════════════════════════════════
 //  RETRIEVAL ENGINE (TF-IDF-like keyword matching)

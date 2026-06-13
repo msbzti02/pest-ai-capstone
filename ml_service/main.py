@@ -170,17 +170,31 @@ async def predict(
         if model is None:
             # --- MOCK DETECTION MODE (when .pth is missing) ---
             print("[*] No weights found: Generating mock ML prediction for testing UI.")
+            import random
+            
+            # Select 5 random mock classes
+            mock_class_ids = random.sample(list(IP102_CLASSES.keys()), 5)
+            
+            # Generate random confidences summing to ~100
+            confidences = [
+                round(random.uniform(85.0, 95.0), 1),
+                round(random.uniform(2.0, 5.0), 1),
+                round(random.uniform(1.0, 3.0), 1),
+                round(random.uniform(0.5, 1.5), 1),
+                round(random.uniform(0.1, 0.5), 1)
+            ]
+            
+            predictions = []
+            for i in range(5):
+                predictions.append({
+                    "class_id": mock_class_ids[i],
+                    "label": IP102_CLASSES[mock_class_ids[i]],
+                    "confidence": confidences[i]
+                })
+
             return {
-                "top_prediction": {
-                    "class_id": 21,
-                    "label": "Army Worm",
-                    "confidence": 98.7
-                },
-                "predictions": [
-                    {"class_id": 21, "label": "Army Worm", "confidence": 98.7},
-                    {"class_id": 22, "label": "Beet Army Worm", "confidence": 0.8},
-                    {"class_id": 18, "label": "Black Cutworm", "confidence": 0.5}
-                ],
+                "top_prediction": predictions[0],
+                "predictions": predictions,
                 "images": {
                     "original": original_b64,
                     "gradcam": None,

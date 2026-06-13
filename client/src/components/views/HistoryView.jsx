@@ -1,13 +1,20 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
-import { Clock, CheckCircle2, AlertTriangle, CalendarDays, Search } from 'lucide-react';
+import { Clock, CheckCircle2, AlertTriangle, CalendarDays, Search, ChevronDown, ChevronUp } from 'lucide-react';
 import { cn } from '../../lib/utils';
+import ReactMarkdown from 'react-markdown';
+import React from 'react';
 
 export default function HistoryView() {
   const [history, setHistory] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [searchTerm, setSearchTerm] = useState('');
+  const [expandedRow, setExpandedRow] = useState(null);
+
+  const toggleRow = (id) => {
+    setExpandedRow(expandedRow === id ? null : id);
+  };
 
   useEffect(() => {
     const fetchHistory = async () => {
@@ -91,31 +98,50 @@ export default function HistoryView() {
               </thead>
               <tbody className="divide-y divide-border/20">
                 {filteredHistory.map((item) => (
-                  <tr key={item.id} className="hover:bg-secondary/20 transition-colors">
-                    <td className="px-6 py-4">
-                      <div className="flex items-center gap-2 text-muted-foreground">
-                        <CalendarDays className="w-4 h-4" />
-                        <span>{new Date(item.createdAt).toLocaleDateString()}</span>
-                        <span className="text-xs opacity-70">{new Date(item.createdAt).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</span>
-                      </div>
-                    </td>
-                    <td className="px-6 py-4 font-semibold text-foreground">
-                      {item.label}
-                    </td>
-                    <td className="px-6 py-4">
-                      <div className="flex items-center gap-2">
-                        <span className="font-mono">{item.confidence.toFixed(1)}%</span>
-                      </div>
-                    </td>
-                    <td className="px-6 py-4">
-                      <span className="px-2 py-1 bg-secondary rounded-md text-xs font-mono text-muted-foreground">
-                        {item.modelName}
-                      </span>
-                    </td>
-                    <td className="px-6 py-4 text-muted-foreground">
-                      {item.location}
-                    </td>
-                  </tr>
+                  <React.Fragment key={item.id}>
+                    <tr onClick={() => toggleRow(item.id)} className="hover:bg-secondary/20 transition-colors cursor-pointer group">
+                      <td className="px-6 py-4">
+                        <div className="flex items-center gap-2 text-muted-foreground">
+                          {expandedRow === item.id ? <ChevronUp className="w-4 h-4 text-primary" /> : <ChevronDown className="w-4 h-4 opacity-50 group-hover:opacity-100" />}
+                          <CalendarDays className="w-4 h-4" />
+                          <span>{new Date(item.createdAt).toLocaleDateString()}</span>
+                          <span className="text-xs opacity-70">{new Date(item.createdAt).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</span>
+                        </div>
+                      </td>
+                      <td className="px-6 py-4 font-semibold text-foreground">
+                        {item.label}
+                      </td>
+                      <td className="px-6 py-4">
+                        <div className="flex items-center gap-2">
+                          <span className="font-mono">{item.confidence.toFixed(1)}%</span>
+                        </div>
+                      </td>
+                      <td className="px-6 py-4">
+                        <span className="px-2 py-1 bg-secondary rounded-md text-xs font-mono text-muted-foreground">
+                          {item.modelName}
+                        </span>
+                      </td>
+                      <td className="px-6 py-4 text-muted-foreground">
+                        {item.location}
+                      </td>
+                    </tr>
+                    {expandedRow === item.id && (
+                      <tr>
+                        <td colSpan="5" className="px-6 py-4 bg-secondary/10 border-b border-border/10">
+                          <div className="pl-8 py-2">
+                            <h4 className="text-sm font-semibold text-foreground mb-2">PestAI RAG System Protocol for {item.label}:</h4>
+                            {item.treatment ? (
+                              <div className="prose prose-invert prose-sm max-w-none text-muted-foreground bg-background/50 p-4 rounded-lg border border-border/50">
+                                <ReactMarkdown>{item.treatment}</ReactMarkdown>
+                              </div>
+                            ) : (
+                              <p className="text-sm text-muted-foreground italic">No treatment protocol was generated for this analysis.</p>
+                            )}
+                          </div>
+                        </td>
+                      </tr>
+                    )}
+                  </React.Fragment>
                 ))}
               </tbody>
             </table>

@@ -16,7 +16,7 @@ export default function SpraySafetyView() {
 
   const fetchFields = async () => {
     try {
-      const res = await axios.get('/api/fields');
+      const res = await axios.get('/api/fields?basic=true');
       const data = res.data;
       setFields(data);
       if (data && data.length > 0) {
@@ -142,12 +142,24 @@ export default function SpraySafetyView() {
         </div>
       )}
 
-      {loading && !weather ? (
+      {!weather && loading ? (
         <div className="h-64 flex items-center justify-center">
           <div className="animate-spin w-8 h-8 border-4 border-blue-500 border-t-transparent rounded-full" />
         </div>
+      ) : weather && weather.error ? (
+        <div className="p-6 bg-red-500/10 border border-red-500/30 rounded-xl text-red-400 text-center">
+          <AlertCircle className="w-8 h-8 mx-auto mb-2 text-red-500" />
+          <h3 className="text-lg font-bold">Weather API Error</h3>
+          <p className="text-sm">{weather.error}</p>
+        </div>
+      ) : forecast && forecast.error ? (
+        <div className="p-6 bg-red-500/10 border border-red-500/30 rounded-xl text-red-400 text-center">
+          <AlertCircle className="w-8 h-8 mx-auto mb-2 text-red-500" />
+          <h3 className="text-lg font-bold">Forecast API Error</h3>
+          <p className="text-sm">{forecast.error}</p>
+        </div>
       ) : weather && forecast ? (
-        <div className="space-y-6">
+        <div className={`space-y-6 transition-all duration-300 ${loading ? 'opacity-40 blur-[2px]' : 'opacity-100 blur-0'}`}>
           {/* Current Conditions */}
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
             

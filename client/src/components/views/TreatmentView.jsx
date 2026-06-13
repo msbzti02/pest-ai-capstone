@@ -1,6 +1,25 @@
 import { CalendarCheck, CheckCircle2, Circle, Clock, Play, AlertCircle, Leaf } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import axios from 'axios';
+import ReactMarkdown from 'react-markdown';
+
+const ALL_PESTS = [
+  "Alfalfa plant bug", "Alfalfa weevil", "Ampelophaga", "Aphids", "Apolygus lucorum", 
+  "Asiatic rice borer", "Beet armyworm", "Beet fly", "Beet spot flies", "Beet weevil", 
+  "Black cutworm", "Blister beetle", "Brown plant hopper", "Chilo suppressalis", 
+  "Chrysocus chinensis", "Cicadella viridis", "Cicadellidae", "Corn borer", 
+  "Cotton Bollworm", "Dacus dorsalis (Mango fruit fly)", "Dasineura sp.", 
+  "Deporaus marginatus", "English grain aphid", "Flax budworm", "Grain spreader thrips", 
+  "Icerya purchasi Maskell", "Lawana imitata Melichara", "Locustoidea (Locusts)", 
+  "Lycorma delicatula", "Lytta polita", "Mango flat beak leafhopper", "Miridae", 
+  "Mole cricket", "Oides decempunctata", "Paddy stem maggot", "Panonchus citri McGregor", 
+  "Papilio xuthus", "Parasa lepida", "Pieris canidia", "Potosiabre vitarsis", 
+  "Prodenia litura", "Rhytidodera bowrinii white", "Rice gall midge", 
+  "Rice leaf caterpillar", "Rice leaf roller", "Rice leafhopper", "Rice shell pest", 
+  "Rice stem fly", "Rice water weevil", "Salurnis marginella", "Small brown plant hopper", 
+  "Spodoptera exigua", "Sternochetus frigidus", "Tarnished plant bug", "Thrips", 
+  "White-backed plant hopper", "Xylotrechus", "Yellow rice borer"
+];
 
 export default function TreatmentView() {
   const [activePlans, setActivePlans] = useState([]);
@@ -9,12 +28,12 @@ export default function TreatmentView() {
 
   // New plan state
   const [showNewPlan, setShowNewPlan] = useState(false);
-  const [newPest, setNewPest] = useState('Fall Armyworm');
+  const [newPest, setNewPest] = useState(ALL_PESTS[0]);
   const [newCrop, setNewCrop] = useState('corn');
   const [isStarting, setIsStarting] = useState(false);
 
-  const pests = ['Fall Armyworm', 'Rice Leafhopper', 'Brown Planthopper', 'Cotton Bollworm', 'Corn Borer', 'Whitefly'];
-  const crops = ['corn', 'rice', 'cotton', 'tomato', 'potato', 'wheat'];
+  const pests = ALL_PESTS;
+  const crops = ['corn', 'rice', 'cotton', 'tomato', 'potato', 'wheat', 'alfalfa', 'beet', 'mango', 'citrus', 'vitis'];
 
   const fetchPlans = async () => {
     try {
@@ -201,6 +220,25 @@ export default function TreatmentView() {
                   <div className="h-full bg-indigo-500 transition-all duration-500 ease-out" style={{ width: `${selectedPlan.progress}%` }} />
                 </div>
               </div>
+
+              {/* Custom Protocol (If generated from AI) */}
+              {selectedPlan.customProtocol && (
+                <div className="px-6 py-4 border-b border-border/30 bg-blue-500/5">
+                  <details className="group cursor-pointer">
+                    <summary className="text-sm font-bold text-blue-400 uppercase tracking-wider flex items-center gap-2 outline-none list-none">
+                      <span className="flex-1">AI Generated Weather-Aware Protocol</span>
+                      <span className="text-xs font-normal text-blue-400/70 bg-blue-500/10 px-2 py-1 rounded group-open:hidden transition">View Details</span>
+                      <span className="text-xs font-normal text-blue-400/70 bg-blue-500/10 px-2 py-1 rounded hidden group-open:block transition">Hide Details</span>
+                    </summary>
+                    <div className="prose prose-invert prose-blue max-w-none prose-sm mt-6
+                                  prose-headings:text-blue-400 prose-headings:font-semibold
+                                  prose-strong:text-blue-300 prose-p:text-muted-foreground
+                                  prose-li:text-muted-foreground prose-ul:my-2">
+                      <ReactMarkdown>{selectedPlan.customProtocol}</ReactMarkdown>
+                    </div>
+                  </details>
+                </div>
+              )}
 
               {/* Timeline Steps */}
               <div className="flex-1 p-6 overflow-y-auto custom-scrollbar space-y-6 relative before:absolute before:inset-0 before:ml-[35px] before:-translate-x-px before:h-full before:w-0.5 before:bg-gradient-to-b before:from-indigo-500/50 before:to-transparent">

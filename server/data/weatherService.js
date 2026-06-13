@@ -12,6 +12,11 @@
  */
 
 import axios from 'axios';
+import https from 'https';
+
+// ── In-Memory Cache for Smooth API Responses ──
+const weatherCache = new Map();
+const CACHE_TTL = 15 * 60 * 1000; // 15 minutes
 
 // ── Spray Safety Thresholds (FAO Guidelines) ──
 const SPRAY_THRESHOLDS = {
@@ -108,12 +113,23 @@ function identifyTurkeyRegion(lat, lon) {
  * Fetch current weather + spray safety for coordinates
  */
 export async function getCurrentWeather(lat, lon) {
+  const cacheKey = `current_${Number(lat).toFixed(2)}_${Number(lon).toFixed(2)}`;
+  if (weatherCache.has(cacheKey)) {
+    const cached = weatherCache.get(cacheKey);
+    if (Date.now() - cached.timestamp < CACHE_TTL) {
+      return cached.data;
+    }
+  }
+
   try {
     const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}` +
       `&current=temperature_2m,relative_humidity_2m,precipitation,wind_speed_10m,wind_direction_10m,cloud_cover,weather_code` +
       `&timezone=auto`;
 
-    const res = await axios.get(url, { timeout: 8000 });
+    const res = await axios.get(url, { 
+      timeout: 8000,
+      httpsAgent: new https.Agent({ family: 4 })
+    });
     const current = res.data.current;
 
     const spraySafety = assessSpraySafety(
@@ -126,7 +142,7 @@ export async function getCurrentWeather(lat, lon) {
 
     const turkeyRegion = identifyTurkeyRegion(lat, lon);
 
-    return {
+    const result = {
       location: { latitude: lat, longitude: lon },
       current: {
         temperature: current.temperature_2m,
@@ -142,6 +158,9 @@ export async function getCurrentWeather(lat, lon) {
       source: "Open-Meteo",
       timestamp: new Date().toISOString(),
     };
+
+    weatherCache.set(cacheKey, { timestamp: Date.now(), data: result });
+    return result;
   } catch (error) {
     console.error("[Weather] API error:", error.message);
     return {
@@ -157,13 +176,24 @@ export async function getCurrentWeather(lat, lon) {
  * Fetch 7-day forecast with spray safety per day
  */
 export async function getForecast(lat, lon) {
+  const cacheKey = `forecast_${Number(lat).toFixed(2)}_${Number(lon).toFixed(2)}`;
+  if (weatherCache.has(cacheKey)) {
+    const cached = weatherCache.get(cacheKey);
+    if (Date.now() - cached.timestamp < CACHE_TTL) {
+      return cached.data;
+    }
+  }
+
   try {
     const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}` +
       `&daily=temperature_2m_max,temperature_2m_min,precipitation_sum,wind_speed_10m_max,weather_code` +
       `&current=temperature_2m,relative_humidity_2m,precipitation,wind_speed_10m,cloud_cover` +
       `&timezone=auto`;
 
-    const res = await axios.get(url, { timeout: 8000 });
+    const res = await axios.get(url, { 
+      timeout: 8000,
+      httpsAgent: new https.Agent({ family: 4 })
+    });
     const { daily, current } = res.data;
 
     const days = daily.time.map((date, idx) => {
@@ -197,7 +227,7 @@ export async function getForecast(lat, lon) {
       current.cloud_cover
     );
 
-    return {
+    const result = {
       location: { latitude: lat, longitude: lon },
       current: {
         temperature: current.temperature_2m,
@@ -217,6 +247,9 @@ export async function getForecast(lat, lon) {
       source: "Open-Meteo",
       timestamp: new Date().toISOString(),
     };
+
+    weatherCache.set(cacheKey, { timestamp: Date.now(), data: result });
+    return result;
   } catch (error) {
     console.error("[Weather] Forecast error:", error.message);
     return { error: "Forecast service unavailable", fallback: true };

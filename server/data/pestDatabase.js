@@ -321,25 +321,998 @@ export const PEST_DATABASE = {
       { day: 14, step: "Prune Infected Shoots", desc: "Remove heavily mined flush growth.", method: "Cultural" },
     ]
   },
+  "Oriental Leafworm Moth": {
+    scientific: "Spodoptera litura", family: "Noctuidae",
+    crops: ["Cotton", "Soybean", "Tobacco", "Vegetables"], severity: "High", lifecycle: "25-35 days",
+    description: "Also known as the tobacco cutworm or cluster caterpillar, it is a highly destructive agricultural pest. The larvae feed on the leaves, causing severe defoliation.",
+    treatment: [
+      { day: 1, step: "Scouting and Confirmation", desc: "Monitor fields for egg masses and young larvae on leaf undersides.", method: "Inspection" },
+      { day: 2, step: "Biopesticide Application", desc: "Apply Bacillus thuringiensis (Bt) or NPV early in the evening.", method: "Biological" },
+      { day: 5, step: "Chemical Spray", desc: "Apply indoxacarb or spinosad if larvae population is above economic threshold.", method: "Chemical" },
+      { day: 14, step: "Monitor Pheromone Traps", desc: "Install traps to monitor adult moth populations and prevent re-infestation.", method: "IPM" },
+    ]
+  },
+  "Army Worm": {
+    scientific: "Spodoptera spp.", family: "Noctuidae",
+    crops: ["Corn", "Sorghum", "Rice", "Wheat"], severity: "High", lifecycle: "30-60 days",
+    description: "A highly destructive group of caterpillars that march across fields, feeding heavily on foliage and grain heads.",
+    treatment: [
+      { day: 1, step: "Early Detection", desc: "Look for windowpane damage, frass, and actively marching caterpillars.", method: "Inspection" },
+      { day: 2, step: "Bt Spray", desc: "Apply Bacillus thuringiensis on young larvae.", method: "Biological" },
+      { day: 5, step: "Chemical Spray", desc: "Apply pyrethroids or organophosphates if infestation exceeds 20%.", method: "Chemical" },
+      { day: 10, step: "Pheromone Traps", desc: "Deploy traps for adult moth monitoring.", method: "IPM" },
+    ]
+  },
+  "Beet Army Worm": {
+    scientific: "Spodoptera exigua", family: "Noctuidae",
+    crops: ["Beet", "Cotton", "Vegetables"], severity: "High", lifecycle: "24-36 days",
+    description: "Polyphagous caterpillar causing severe defoliation in vegetable crops.",
+    treatment: [
+      { day: 1, step: "Pheromone Monitoring", desc: "Deploy traps to track adult flight.", method: "Inspection" },
+      { day: 2, step: "NPV Application", desc: "Apply nuclear polyhedrosis virus on larvae.", method: "Biological" },
+      { day: 5, step: "Emamectin Benzoate", desc: "Spray if population exceeds threshold.", method: "Chemical" },
+      { day: 10, step: "Intercropping", desc: "Plant trap crops to divert pest.", method: "Cultural" },
+    ]
+  },
+  "Black Cutworm": {
+    scientific: "Agrotis ipsilon", family: "Noctuidae",
+    crops: ["Corn", "Vegetables", "Turf"], severity: "High", lifecycle: "35-45 days",
+    description: "Larvae cut down young seedlings at the soil surface, causing severe stand loss early in the season.",
+    treatment: [
+      { day: 1, step: "Soil Inspection", desc: "Look for cut seedlings and dig around base to find curled caterpillars.", method: "Inspection" },
+      { day: 2, step: "Nematode Application", desc: "Apply Steinernema carpocapsae to moist soil.", method: "Biological" },
+      { day: 5, step: "Bait Application", desc: "Apply insecticidal bait to soil surface at dusk.", method: "Chemical" },
+      { day: 14, step: "Weed Control", desc: "Remove winter annual weeds before planting.", method: "Cultural" },
+    ]
+  },
+
+  "Rice Gall Midge": {
+    scientific: "Unknown species (Rice Gall Midge)", family: "Unknown Family",
+    crops: ["Various Crops"], severity: "Medium", lifecycle: "14-30 days",
+    description: "A destructive agricultural pest found in the IP102 dataset. Detailed biological data requires field observation.",
+    treatment: [
+      { day: 1, step: "Initial Scouting", desc: "Monitor fields for early signs of infestation.", method: "Inspection" },
+      { day: 3, step: "Biocontrol Deployment", desc: "Introduce or conserve natural predators when possible.", method: "Biological" },
+      { day: 7, step: "Targeted Treatment", desc: "Apply recommended chemical control if economic threshold is exceeded.", method: "Chemical" },
+      { day: 14, step: "Cultural Management", desc: "Implement crop rotation and sanitation to prevent re-infestation.", method: "Cultural" },
+    ]
+  },
+  "Rice Stemfly": {
+    scientific: "Unknown species (Rice Stemfly)", family: "Unknown Family",
+    crops: ["Various Crops"], severity: "Medium", lifecycle: "14-30 days",
+    description: "A destructive agricultural pest found in the IP102 dataset. Detailed biological data requires field observation.",
+    treatment: [
+      { day: 1, step: "Initial Scouting", desc: "Monitor fields for early signs of infestation.", method: "Inspection" },
+      { day: 3, step: "Biocontrol Deployment", desc: "Introduce or conserve natural predators when possible.", method: "Biological" },
+      { day: 7, step: "Targeted Treatment", desc: "Apply recommended chemical control if economic threshold is exceeded.", method: "Chemical" },
+      { day: 14, step: "Cultural Management", desc: "Implement crop rotation and sanitation to prevent re-infestation.", method: "Cultural" },
+    ]
+  },
+  "Brown Plant Hopper": {
+    scientific: "Unknown species (Brown Plant Hopper)", family: "Unknown Family",
+    crops: ["Various Crops"], severity: "Medium", lifecycle: "14-30 days",
+    description: "A destructive agricultural pest found in the IP102 dataset. Detailed biological data requires field observation.",
+    treatment: [
+      { day: 1, step: "Initial Scouting", desc: "Monitor fields for early signs of infestation.", method: "Inspection" },
+      { day: 3, step: "Biocontrol Deployment", desc: "Introduce or conserve natural predators when possible.", method: "Biological" },
+      { day: 7, step: "Targeted Treatment", desc: "Apply recommended chemical control if economic threshold is exceeded.", method: "Chemical" },
+      { day: 14, step: "Cultural Management", desc: "Implement crop rotation and sanitation to prevent re-infestation.", method: "Cultural" },
+    ]
+  },
+  "White Backed Plant Hopper": {
+    scientific: "Unknown species (White Backed Plant Hopper)", family: "Unknown Family",
+    crops: ["Various Crops"], severity: "Medium", lifecycle: "14-30 days",
+    description: "A destructive agricultural pest found in the IP102 dataset. Detailed biological data requires field observation.",
+    treatment: [
+      { day: 1, step: "Initial Scouting", desc: "Monitor fields for early signs of infestation.", method: "Inspection" },
+      { day: 3, step: "Biocontrol Deployment", desc: "Introduce or conserve natural predators when possible.", method: "Biological" },
+      { day: 7, step: "Targeted Treatment", desc: "Apply recommended chemical control if economic threshold is exceeded.", method: "Chemical" },
+      { day: 14, step: "Cultural Management", desc: "Implement crop rotation and sanitation to prevent re-infestation.", method: "Cultural" },
+    ]
+  },
+  "Small Brown Plant Hopper": {
+    scientific: "Unknown species (Small Brown Plant Hopper)", family: "Unknown Family",
+    crops: ["Various Crops"], severity: "Medium", lifecycle: "14-30 days",
+    description: "A destructive agricultural pest found in the IP102 dataset. Detailed biological data requires field observation.",
+    treatment: [
+      { day: 1, step: "Initial Scouting", desc: "Monitor fields for early signs of infestation.", method: "Inspection" },
+      { day: 3, step: "Biocontrol Deployment", desc: "Introduce or conserve natural predators when possible.", method: "Biological" },
+      { day: 7, step: "Targeted Treatment", desc: "Apply recommended chemical control if economic threshold is exceeded.", method: "Chemical" },
+      { day: 14, step: "Cultural Management", desc: "Implement crop rotation and sanitation to prevent re-infestation.", method: "Cultural" },
+    ]
+  },
+  "Rice Water Weevil": {
+    scientific: "Unknown species (Rice Water Weevil)", family: "Unknown Family",
+    crops: ["Various Crops"], severity: "Medium", lifecycle: "14-30 days",
+    description: "A destructive agricultural pest found in the IP102 dataset. Detailed biological data requires field observation.",
+    treatment: [
+      { day: 1, step: "Initial Scouting", desc: "Monitor fields for early signs of infestation.", method: "Inspection" },
+      { day: 3, step: "Biocontrol Deployment", desc: "Introduce or conserve natural predators when possible.", method: "Biological" },
+      { day: 7, step: "Targeted Treatment", desc: "Apply recommended chemical control if economic threshold is exceeded.", method: "Chemical" },
+      { day: 14, step: "Cultural Management", desc: "Implement crop rotation and sanitation to prevent re-infestation.", method: "Cultural" },
+    ]
+  },
+  "Grain Spreader Thrips": {
+    scientific: "Unknown species (Grain Spreader Thrips)", family: "Unknown Family",
+    crops: ["Various Crops"], severity: "Medium", lifecycle: "14-30 days",
+    description: "A destructive agricultural pest found in the IP102 dataset. Detailed biological data requires field observation.",
+    treatment: [
+      { day: 1, step: "Initial Scouting", desc: "Monitor fields for early signs of infestation.", method: "Inspection" },
+      { day: 3, step: "Biocontrol Deployment", desc: "Introduce or conserve natural predators when possible.", method: "Biological" },
+      { day: 7, step: "Targeted Treatment", desc: "Apply recommended chemical control if economic threshold is exceeded.", method: "Chemical" },
+      { day: 14, step: "Cultural Management", desc: "Implement crop rotation and sanitation to prevent re-infestation.", method: "Cultural" },
+    ]
+  },
+  "Rice Shell Pest": {
+    scientific: "Unknown species (Rice Shell Pest)", family: "Unknown Family",
+    crops: ["Various Crops"], severity: "Medium", lifecycle: "14-30 days",
+    description: "A destructive agricultural pest found in the IP102 dataset. Detailed biological data requires field observation.",
+    treatment: [
+      { day: 1, step: "Initial Scouting", desc: "Monitor fields for early signs of infestation.", method: "Inspection" },
+      { day: 3, step: "Biocontrol Deployment", desc: "Introduce or conserve natural predators when possible.", method: "Biological" },
+      { day: 7, step: "Targeted Treatment", desc: "Apply recommended chemical control if economic threshold is exceeded.", method: "Chemical" },
+      { day: 14, step: "Cultural Management", desc: "Implement crop rotation and sanitation to prevent re-infestation.", method: "Cultural" },
+    ]
+  },
+  "Grub": {
+    scientific: "Unknown species (Grub)", family: "Unknown Family",
+    crops: ["Various Crops"], severity: "Medium", lifecycle: "14-30 days",
+    description: "A destructive agricultural pest found in the IP102 dataset. Detailed biological data requires field observation.",
+    treatment: [
+      { day: 1, step: "Initial Scouting", desc: "Monitor fields for early signs of infestation.", method: "Inspection" },
+      { day: 3, step: "Biocontrol Deployment", desc: "Introduce or conserve natural predators when possible.", method: "Biological" },
+      { day: 7, step: "Targeted Treatment", desc: "Apply recommended chemical control if economic threshold is exceeded.", method: "Chemical" },
+      { day: 14, step: "Cultural Management", desc: "Implement crop rotation and sanitation to prevent re-infestation.", method: "Cultural" },
+    ]
+  },
+  "Wireworm": {
+    scientific: "Unknown species (Wireworm)", family: "Unknown Family",
+    crops: ["Various Crops"], severity: "Medium", lifecycle: "14-30 days",
+    description: "A destructive agricultural pest found in the IP102 dataset. Detailed biological data requires field observation.",
+    treatment: [
+      { day: 1, step: "Initial Scouting", desc: "Monitor fields for early signs of infestation.", method: "Inspection" },
+      { day: 3, step: "Biocontrol Deployment", desc: "Introduce or conserve natural predators when possible.", method: "Biological" },
+      { day: 7, step: "Targeted Treatment", desc: "Apply recommended chemical control if economic threshold is exceeded.", method: "Chemical" },
+      { day: 14, step: "Cultural Management", desc: "Implement crop rotation and sanitation to prevent re-infestation.", method: "Cultural" },
+    ]
+  },
+  "White Grub": {
+    scientific: "Unknown species (White Grub)", family: "Unknown Family",
+    crops: ["Various Crops"], severity: "Medium", lifecycle: "14-30 days",
+    description: "A destructive agricultural pest found in the IP102 dataset. Detailed biological data requires field observation.",
+    treatment: [
+      { day: 1, step: "Initial Scouting", desc: "Monitor fields for early signs of infestation.", method: "Inspection" },
+      { day: 3, step: "Biocontrol Deployment", desc: "Introduce or conserve natural predators when possible.", method: "Biological" },
+      { day: 7, step: "Targeted Treatment", desc: "Apply recommended chemical control if economic threshold is exceeded.", method: "Chemical" },
+      { day: 14, step: "Cultural Management", desc: "Implement crop rotation and sanitation to prevent re-infestation.", method: "Cultural" },
+    ]
+  },
+  "Large Cutworm": {
+    scientific: "Unknown species (Large Cutworm)", family: "Unknown Family",
+    crops: ["Various Crops"], severity: "Medium", lifecycle: "14-30 days",
+    description: "A destructive agricultural pest found in the IP102 dataset. Detailed biological data requires field observation.",
+    treatment: [
+      { day: 1, step: "Initial Scouting", desc: "Monitor fields for early signs of infestation.", method: "Inspection" },
+      { day: 3, step: "Biocontrol Deployment", desc: "Introduce or conserve natural predators when possible.", method: "Biological" },
+      { day: 7, step: "Targeted Treatment", desc: "Apply recommended chemical control if economic threshold is exceeded.", method: "Chemical" },
+      { day: 14, step: "Cultural Management", desc: "Implement crop rotation and sanitation to prevent re-infestation.", method: "Cultural" },
+    ]
+  },
+  "Yellow Cutworm": {
+    scientific: "Unknown species (Yellow Cutworm)", family: "Unknown Family",
+    crops: ["Various Crops"], severity: "Medium", lifecycle: "14-30 days",
+    description: "A destructive agricultural pest found in the IP102 dataset. Detailed biological data requires field observation.",
+    treatment: [
+      { day: 1, step: "Initial Scouting", desc: "Monitor fields for early signs of infestation.", method: "Inspection" },
+      { day: 3, step: "Biocontrol Deployment", desc: "Introduce or conserve natural predators when possible.", method: "Biological" },
+      { day: 7, step: "Targeted Treatment", desc: "Apply recommended chemical control if economic threshold is exceeded.", method: "Chemical" },
+      { day: 14, step: "Cultural Management", desc: "Implement crop rotation and sanitation to prevent re-infestation.", method: "Cultural" },
+    ]
+  },
+  "Yellow Tiger Moth": {
+    scientific: "Unknown species (Yellow Tiger Moth)", family: "Unknown Family",
+    crops: ["Various Crops"], severity: "Medium", lifecycle: "14-30 days",
+    description: "A destructive agricultural pest found in the IP102 dataset. Detailed biological data requires field observation.",
+    treatment: [
+      { day: 1, step: "Initial Scouting", desc: "Monitor fields for early signs of infestation.", method: "Inspection" },
+      { day: 3, step: "Biocontrol Deployment", desc: "Introduce or conserve natural predators when possible.", method: "Biological" },
+      { day: 7, step: "Targeted Treatment", desc: "Apply recommended chemical control if economic threshold is exceeded.", method: "Chemical" },
+      { day: 14, step: "Cultural Management", desc: "Implement crop rotation and sanitation to prevent re-infestation.", method: "Cultural" },
+    ]
+  },
+  "Rice Leaf Roller (Alt)": {
+    scientific: "Unknown species (Rice Leaf Roller (Alt))", family: "Unknown Family",
+    crops: ["Various Crops"], severity: "Medium", lifecycle: "14-30 days",
+    description: "A destructive agricultural pest found in the IP102 dataset. Detailed biological data requires field observation.",
+    treatment: [
+      { day: 1, step: "Initial Scouting", desc: "Monitor fields for early signs of infestation.", method: "Inspection" },
+      { day: 3, step: "Biocontrol Deployment", desc: "Introduce or conserve natural predators when possible.", method: "Biological" },
+      { day: 7, step: "Targeted Treatment", desc: "Apply recommended chemical control if economic threshold is exceeded.", method: "Chemical" },
+      { day: 14, step: "Cultural Management", desc: "Implement crop rotation and sanitation to prevent re-infestation.", method: "Cultural" },
+    ]
+  },
+  "Meadow Moth": {
+    scientific: "Unknown species (Meadow Moth)", family: "Unknown Family",
+    crops: ["Various Crops"], severity: "Medium", lifecycle: "14-30 days",
+    description: "A destructive agricultural pest found in the IP102 dataset. Detailed biological data requires field observation.",
+    treatment: [
+      { day: 1, step: "Initial Scouting", desc: "Monitor fields for early signs of infestation.", method: "Inspection" },
+      { day: 3, step: "Biocontrol Deployment", desc: "Introduce or conserve natural predators when possible.", method: "Biological" },
+      { day: 7, step: "Targeted Treatment", desc: "Apply recommended chemical control if economic threshold is exceeded.", method: "Chemical" },
+      { day: 14, step: "Cultural Management", desc: "Implement crop rotation and sanitation to prevent re-infestation.", method: "Cultural" },
+    ]
+  },
+  "Fall Webworm": {
+    scientific: "Unknown species (Fall Webworm)", family: "Unknown Family",
+    crops: ["Various Crops"], severity: "Medium", lifecycle: "14-30 days",
+    description: "A destructive agricultural pest found in the IP102 dataset. Detailed biological data requires field observation.",
+    treatment: [
+      { day: 1, step: "Initial Scouting", desc: "Monitor fields for early signs of infestation.", method: "Inspection" },
+      { day: 3, step: "Biocontrol Deployment", desc: "Introduce or conserve natural predators when possible.", method: "Biological" },
+      { day: 7, step: "Targeted Treatment", desc: "Apply recommended chemical control if economic threshold is exceeded.", method: "Chemical" },
+      { day: 14, step: "Cultural Management", desc: "Implement crop rotation and sanitation to prevent re-infestation.", method: "Cultural" },
+    ]
+  },
+  "Beet Webworm": {
+    scientific: "Unknown species (Beet Webworm)", family: "Unknown Family",
+    crops: ["Various Crops"], severity: "Medium", lifecycle: "14-30 days",
+    description: "A destructive agricultural pest found in the IP102 dataset. Detailed biological data requires field observation.",
+    treatment: [
+      { day: 1, step: "Initial Scouting", desc: "Monitor fields for early signs of infestation.", method: "Inspection" },
+      { day: 3, step: "Biocontrol Deployment", desc: "Introduce or conserve natural predators when possible.", method: "Biological" },
+      { day: 7, step: "Targeted Treatment", desc: "Apply recommended chemical control if economic threshold is exceeded.", method: "Chemical" },
+      { day: 14, step: "Cultural Management", desc: "Implement crop rotation and sanitation to prevent re-infestation.", method: "Cultural" },
+    ]
+  },
+  "Soybean Looper": {
+    scientific: "Unknown species (Soybean Looper)", family: "Unknown Family",
+    crops: ["Various Crops"], severity: "Medium", lifecycle: "14-30 days",
+    description: "A destructive agricultural pest found in the IP102 dataset. Detailed biological data requires field observation.",
+    treatment: [
+      { day: 1, step: "Initial Scouting", desc: "Monitor fields for early signs of infestation.", method: "Inspection" },
+      { day: 3, step: "Biocontrol Deployment", desc: "Introduce or conserve natural predators when possible.", method: "Biological" },
+      { day: 7, step: "Targeted Treatment", desc: "Apply recommended chemical control if economic threshold is exceeded.", method: "Chemical" },
+      { day: 14, step: "Cultural Management", desc: "Implement crop rotation and sanitation to prevent re-infestation.", method: "Cultural" },
+    ]
+  },
+  "Vegetable Leaf Miner": {
+    scientific: "Unknown species (Vegetable Leaf Miner)", family: "Unknown Family",
+    crops: ["Various Crops"], severity: "Medium", lifecycle: "14-30 days",
+    description: "A destructive agricultural pest found in the IP102 dataset. Detailed biological data requires field observation.",
+    treatment: [
+      { day: 1, step: "Initial Scouting", desc: "Monitor fields for early signs of infestation.", method: "Inspection" },
+      { day: 3, step: "Biocontrol Deployment", desc: "Introduce or conserve natural predators when possible.", method: "Biological" },
+      { day: 7, step: "Targeted Treatment", desc: "Apply recommended chemical control if economic threshold is exceeded.", method: "Chemical" },
+      { day: 14, step: "Cultural Management", desc: "Implement crop rotation and sanitation to prevent re-infestation.", method: "Cultural" },
+    ]
+  },
+  "Potato Tuberworm": {
+    scientific: "Unknown species (Potato Tuberworm)", family: "Unknown Family",
+    crops: ["Various Crops"], severity: "Medium", lifecycle: "14-30 days",
+    description: "A destructive agricultural pest found in the IP102 dataset. Detailed biological data requires field observation.",
+    treatment: [
+      { day: 1, step: "Initial Scouting", desc: "Monitor fields for early signs of infestation.", method: "Inspection" },
+      { day: 3, step: "Biocontrol Deployment", desc: "Introduce or conserve natural predators when possible.", method: "Biological" },
+      { day: 7, step: "Targeted Treatment", desc: "Apply recommended chemical control if economic threshold is exceeded.", method: "Chemical" },
+      { day: 14, step: "Cultural Management", desc: "Implement crop rotation and sanitation to prevent re-infestation.", method: "Cultural" },
+    ]
+  },
+  "Flea Beetle": {
+    scientific: "Unknown species (Flea Beetle)", family: "Unknown Family",
+    crops: ["Various Crops"], severity: "Medium", lifecycle: "14-30 days",
+    description: "A destructive agricultural pest found in the IP102 dataset. Detailed biological data requires field observation.",
+    treatment: [
+      { day: 1, step: "Initial Scouting", desc: "Monitor fields for early signs of infestation.", method: "Inspection" },
+      { day: 3, step: "Biocontrol Deployment", desc: "Introduce or conserve natural predators when possible.", method: "Biological" },
+      { day: 7, step: "Targeted Treatment", desc: "Apply recommended chemical control if economic threshold is exceeded.", method: "Chemical" },
+      { day: 14, step: "Cultural Management", desc: "Implement crop rotation and sanitation to prevent re-infestation.", method: "Cultural" },
+    ]
+  },
+  "Cabbage Army Worm": {
+    scientific: "Unknown species (Cabbage Army Worm)", family: "Unknown Family",
+    crops: ["Various Crops"], severity: "Medium", lifecycle: "14-30 days",
+    description: "A destructive agricultural pest found in the IP102 dataset. Detailed biological data requires field observation.",
+    treatment: [
+      { day: 1, step: "Initial Scouting", desc: "Monitor fields for early signs of infestation.", method: "Inspection" },
+      { day: 3, step: "Biocontrol Deployment", desc: "Introduce or conserve natural predators when possible.", method: "Biological" },
+      { day: 7, step: "Targeted Treatment", desc: "Apply recommended chemical control if economic threshold is exceeded.", method: "Chemical" },
+      { day: 14, step: "Cultural Management", desc: "Implement crop rotation and sanitation to prevent re-infestation.", method: "Cultural" },
+    ]
+  },
+  "Corn Earworm": {
+    scientific: "Unknown species (Corn Earworm)", family: "Unknown Family",
+    crops: ["Various Crops"], severity: "Medium", lifecycle: "14-30 days",
+    description: "A destructive agricultural pest found in the IP102 dataset. Detailed biological data requires field observation.",
+    treatment: [
+      { day: 1, step: "Initial Scouting", desc: "Monitor fields for early signs of infestation.", method: "Inspection" },
+      { day: 3, step: "Biocontrol Deployment", desc: "Introduce or conserve natural predators when possible.", method: "Biological" },
+      { day: 7, step: "Targeted Treatment", desc: "Apply recommended chemical control if economic threshold is exceeded.", method: "Chemical" },
+      { day: 14, step: "Cultural Management", desc: "Implement crop rotation and sanitation to prevent re-infestation.", method: "Cultural" },
+    ]
+  },
+  "Tobacco Budworm": {
+    scientific: "Unknown species (Tobacco Budworm)", family: "Unknown Family",
+    crops: ["Various Crops"], severity: "Medium", lifecycle: "14-30 days",
+    description: "A destructive agricultural pest found in the IP102 dataset. Detailed biological data requires field observation.",
+    treatment: [
+      { day: 1, step: "Initial Scouting", desc: "Monitor fields for early signs of infestation.", method: "Inspection" },
+      { day: 3, step: "Biocontrol Deployment", desc: "Introduce or conserve natural predators when possible.", method: "Biological" },
+      { day: 7, step: "Targeted Treatment", desc: "Apply recommended chemical control if economic threshold is exceeded.", method: "Chemical" },
+      { day: 14, step: "Cultural Management", desc: "Implement crop rotation and sanitation to prevent re-infestation.", method: "Cultural" },
+    ]
+  },
+  "Bollworm": {
+    scientific: "Unknown species (Bollworm)", family: "Unknown Family",
+    crops: ["Various Crops"], severity: "Medium", lifecycle: "14-30 days",
+    description: "A destructive agricultural pest found in the IP102 dataset. Detailed biological data requires field observation.",
+    treatment: [
+      { day: 1, step: "Initial Scouting", desc: "Monitor fields for early signs of infestation.", method: "Inspection" },
+      { day: 3, step: "Biocontrol Deployment", desc: "Introduce or conserve natural predators when possible.", method: "Biological" },
+      { day: 7, step: "Targeted Treatment", desc: "Apply recommended chemical control if economic threshold is exceeded.", method: "Chemical" },
+      { day: 14, step: "Cultural Management", desc: "Implement crop rotation and sanitation to prevent re-infestation.", method: "Cultural" },
+    ]
+  },
+  "Green Stink Bug": {
+    scientific: "Unknown species (Green Stink Bug)", family: "Unknown Family",
+    crops: ["Various Crops"], severity: "Medium", lifecycle: "14-30 days",
+    description: "A destructive agricultural pest found in the IP102 dataset. Detailed biological data requires field observation.",
+    treatment: [
+      { day: 1, step: "Initial Scouting", desc: "Monitor fields for early signs of infestation.", method: "Inspection" },
+      { day: 3, step: "Biocontrol Deployment", desc: "Introduce or conserve natural predators when possible.", method: "Biological" },
+      { day: 7, step: "Targeted Treatment", desc: "Apply recommended chemical control if economic threshold is exceeded.", method: "Chemical" },
+      { day: 14, step: "Cultural Management", desc: "Implement crop rotation and sanitation to prevent re-infestation.", method: "Cultural" },
+    ]
+  },
+  "Leaf Beetle": {
+    scientific: "Unknown species (Leaf Beetle)", family: "Unknown Family",
+    crops: ["Various Crops"], severity: "Medium", lifecycle: "14-30 days",
+    description: "A destructive agricultural pest found in the IP102 dataset. Detailed biological data requires field observation.",
+    treatment: [
+      { day: 1, step: "Initial Scouting", desc: "Monitor fields for early signs of infestation.", method: "Inspection" },
+      { day: 3, step: "Biocontrol Deployment", desc: "Introduce or conserve natural predators when possible.", method: "Biological" },
+      { day: 7, step: "Targeted Treatment", desc: "Apply recommended chemical control if economic threshold is exceeded.", method: "Chemical" },
+      { day: 14, step: "Cultural Management", desc: "Implement crop rotation and sanitation to prevent re-infestation.", method: "Cultural" },
+    ]
+  },
+  "Hoverfly": {
+    scientific: "Unknown species (Hoverfly)", family: "Unknown Family",
+    crops: ["Various Crops"], severity: "Medium", lifecycle: "14-30 days",
+    description: "A destructive agricultural pest found in the IP102 dataset. Detailed biological data requires field observation.",
+    treatment: [
+      { day: 1, step: "Initial Scouting", desc: "Monitor fields for early signs of infestation.", method: "Inspection" },
+      { day: 3, step: "Biocontrol Deployment", desc: "Introduce or conserve natural predators when possible.", method: "Biological" },
+      { day: 7, step: "Targeted Treatment", desc: "Apply recommended chemical control if economic threshold is exceeded.", method: "Chemical" },
+      { day: 14, step: "Cultural Management", desc: "Implement crop rotation and sanitation to prevent re-infestation.", method: "Cultural" },
+    ]
+  },
+  "Aphid (Green Peach)": {
+    scientific: "Unknown species (Aphid (Green Peach))", family: "Unknown Family",
+    crops: ["Various Crops"], severity: "Medium", lifecycle: "14-30 days",
+    description: "A destructive agricultural pest found in the IP102 dataset. Detailed biological data requires field observation.",
+    treatment: [
+      { day: 1, step: "Initial Scouting", desc: "Monitor fields for early signs of infestation.", method: "Inspection" },
+      { day: 3, step: "Biocontrol Deployment", desc: "Introduce or conserve natural predators when possible.", method: "Biological" },
+      { day: 7, step: "Targeted Treatment", desc: "Apply recommended chemical control if economic threshold is exceeded.", method: "Chemical" },
+      { day: 14, step: "Cultural Management", desc: "Implement crop rotation and sanitation to prevent re-infestation.", method: "Cultural" },
+    ]
+  },
+  "Aphid (Cotton)": {
+    scientific: "Unknown species (Aphid (Cotton))", family: "Unknown Family",
+    crops: ["Various Crops"], severity: "Medium", lifecycle: "14-30 days",
+    description: "A destructive agricultural pest found in the IP102 dataset. Detailed biological data requires field observation.",
+    treatment: [
+      { day: 1, step: "Initial Scouting", desc: "Monitor fields for early signs of infestation.", method: "Inspection" },
+      { day: 3, step: "Biocontrol Deployment", desc: "Introduce or conserve natural predators when possible.", method: "Biological" },
+      { day: 7, step: "Targeted Treatment", desc: "Apply recommended chemical control if economic threshold is exceeded.", method: "Chemical" },
+      { day: 14, step: "Cultural Management", desc: "Implement crop rotation and sanitation to prevent re-infestation.", method: "Cultural" },
+    ]
+  },
+  "Mealybug": {
+    scientific: "Unknown species (Mealybug)", family: "Unknown Family",
+    crops: ["Various Crops"], severity: "Medium", lifecycle: "14-30 days",
+    description: "A destructive agricultural pest found in the IP102 dataset. Detailed biological data requires field observation.",
+    treatment: [
+      { day: 1, step: "Initial Scouting", desc: "Monitor fields for early signs of infestation.", method: "Inspection" },
+      { day: 3, step: "Biocontrol Deployment", desc: "Introduce or conserve natural predators when possible.", method: "Biological" },
+      { day: 7, step: "Targeted Treatment", desc: "Apply recommended chemical control if economic threshold is exceeded.", method: "Chemical" },
+      { day: 14, step: "Cultural Management", desc: "Implement crop rotation and sanitation to prevent re-infestation.", method: "Cultural" },
+    ]
+  },
+  "Leaf Miner": {
+    scientific: "Unknown species (Leaf Miner)", family: "Unknown Family",
+    crops: ["Various Crops"], severity: "Medium", lifecycle: "14-30 days",
+    description: "A destructive agricultural pest found in the IP102 dataset. Detailed biological data requires field observation.",
+    treatment: [
+      { day: 1, step: "Initial Scouting", desc: "Monitor fields for early signs of infestation.", method: "Inspection" },
+      { day: 3, step: "Biocontrol Deployment", desc: "Introduce or conserve natural predators when possible.", method: "Biological" },
+      { day: 7, step: "Targeted Treatment", desc: "Apply recommended chemical control if economic threshold is exceeded.", method: "Chemical" },
+      { day: 14, step: "Cultural Management", desc: "Implement crop rotation and sanitation to prevent re-infestation.", method: "Cultural" },
+    ]
+  },
+  "Sawfly": {
+    scientific: "Unknown species (Sawfly)", family: "Unknown Family",
+    crops: ["Various Crops"], severity: "Medium", lifecycle: "14-30 days",
+    description: "A destructive agricultural pest found in the IP102 dataset. Detailed biological data requires field observation.",
+    treatment: [
+      { day: 1, step: "Initial Scouting", desc: "Monitor fields for early signs of infestation.", method: "Inspection" },
+      { day: 3, step: "Biocontrol Deployment", desc: "Introduce or conserve natural predators when possible.", method: "Biological" },
+      { day: 7, step: "Targeted Treatment", desc: "Apply recommended chemical control if economic threshold is exceeded.", method: "Chemical" },
+      { day: 14, step: "Cultural Management", desc: "Implement crop rotation and sanitation to prevent re-infestation.", method: "Cultural" },
+    ]
+  },
+  "Scale Insect": {
+    scientific: "Unknown species (Scale Insect)", family: "Unknown Family",
+    crops: ["Various Crops"], severity: "Medium", lifecycle: "14-30 days",
+    description: "A destructive agricultural pest found in the IP102 dataset. Detailed biological data requires field observation.",
+    treatment: [
+      { day: 1, step: "Initial Scouting", desc: "Monitor fields for early signs of infestation.", method: "Inspection" },
+      { day: 3, step: "Biocontrol Deployment", desc: "Introduce or conserve natural predators when possible.", method: "Biological" },
+      { day: 7, step: "Targeted Treatment", desc: "Apply recommended chemical control if economic threshold is exceeded.", method: "Chemical" },
+      { day: 14, step: "Cultural Management", desc: "Implement crop rotation and sanitation to prevent re-infestation.", method: "Cultural" },
+    ]
+  },
+  "Fruit Fly": {
+    scientific: "Unknown species (Fruit Fly)", family: "Unknown Family",
+    crops: ["Various Crops"], severity: "Medium", lifecycle: "14-30 days",
+    description: "A destructive agricultural pest found in the IP102 dataset. Detailed biological data requires field observation.",
+    treatment: [
+      { day: 1, step: "Initial Scouting", desc: "Monitor fields for early signs of infestation.", method: "Inspection" },
+      { day: 3, step: "Biocontrol Deployment", desc: "Introduce or conserve natural predators when possible.", method: "Biological" },
+      { day: 7, step: "Targeted Treatment", desc: "Apply recommended chemical control if economic threshold is exceeded.", method: "Chemical" },
+      { day: 14, step: "Cultural Management", desc: "Implement crop rotation and sanitation to prevent re-infestation.", method: "Cultural" },
+    ]
+  },
+  "Citrus Psyllid": {
+    scientific: "Unknown species (Citrus Psyllid)", family: "Unknown Family",
+    crops: ["Various Crops"], severity: "Medium", lifecycle: "14-30 days",
+    description: "A destructive agricultural pest found in the IP102 dataset. Detailed biological data requires field observation.",
+    treatment: [
+      { day: 1, step: "Initial Scouting", desc: "Monitor fields for early signs of infestation.", method: "Inspection" },
+      { day: 3, step: "Biocontrol Deployment", desc: "Introduce or conserve natural predators when possible.", method: "Biological" },
+      { day: 7, step: "Targeted Treatment", desc: "Apply recommended chemical control if economic threshold is exceeded.", method: "Chemical" },
+      { day: 14, step: "Cultural Management", desc: "Implement crop rotation and sanitation to prevent re-infestation.", method: "Cultural" },
+    ]
+  },
+  "Codling Moth": {
+    scientific: "Unknown species (Codling Moth)", family: "Unknown Family",
+    crops: ["Various Crops"], severity: "Medium", lifecycle: "14-30 days",
+    description: "A destructive agricultural pest found in the IP102 dataset. Detailed biological data requires field observation.",
+    treatment: [
+      { day: 1, step: "Initial Scouting", desc: "Monitor fields for early signs of infestation.", method: "Inspection" },
+      { day: 3, step: "Biocontrol Deployment", desc: "Introduce or conserve natural predators when possible.", method: "Biological" },
+      { day: 7, step: "Targeted Treatment", desc: "Apply recommended chemical control if economic threshold is exceeded.", method: "Chemical" },
+      { day: 14, step: "Cultural Management", desc: "Implement crop rotation and sanitation to prevent re-infestation.", method: "Cultural" },
+    ]
+  },
+  "Gypsy Moth": {
+    scientific: "Unknown species (Gypsy Moth)", family: "Unknown Family",
+    crops: ["Various Crops"], severity: "Medium", lifecycle: "14-30 days",
+    description: "A destructive agricultural pest found in the IP102 dataset. Detailed biological data requires field observation.",
+    treatment: [
+      { day: 1, step: "Initial Scouting", desc: "Monitor fields for early signs of infestation.", method: "Inspection" },
+      { day: 3, step: "Biocontrol Deployment", desc: "Introduce or conserve natural predators when possible.", method: "Biological" },
+      { day: 7, step: "Targeted Treatment", desc: "Apply recommended chemical control if economic threshold is exceeded.", method: "Chemical" },
+      { day: 14, step: "Cultural Management", desc: "Implement crop rotation and sanitation to prevent re-infestation.", method: "Cultural" },
+    ]
+  },
+  "Bagworm": {
+    scientific: "Unknown species (Bagworm)", family: "Unknown Family",
+    crops: ["Various Crops"], severity: "Medium", lifecycle: "14-30 days",
+    description: "A destructive agricultural pest found in the IP102 dataset. Detailed biological data requires field observation.",
+    treatment: [
+      { day: 1, step: "Initial Scouting", desc: "Monitor fields for early signs of infestation.", method: "Inspection" },
+      { day: 3, step: "Biocontrol Deployment", desc: "Introduce or conserve natural predators when possible.", method: "Biological" },
+      { day: 7, step: "Targeted Treatment", desc: "Apply recommended chemical control if economic threshold is exceeded.", method: "Chemical" },
+      { day: 14, step: "Cultural Management", desc: "Implement crop rotation and sanitation to prevent re-infestation.", method: "Cultural" },
+    ]
+  },
+  "Tent Caterpillar": {
+    scientific: "Unknown species (Tent Caterpillar)", family: "Unknown Family",
+    crops: ["Various Crops"], severity: "Medium", lifecycle: "14-30 days",
+    description: "A destructive agricultural pest found in the IP102 dataset. Detailed biological data requires field observation.",
+    treatment: [
+      { day: 1, step: "Initial Scouting", desc: "Monitor fields for early signs of infestation.", method: "Inspection" },
+      { day: 3, step: "Biocontrol Deployment", desc: "Introduce or conserve natural predators when possible.", method: "Biological" },
+      { day: 7, step: "Targeted Treatment", desc: "Apply recommended chemical control if economic threshold is exceeded.", method: "Chemical" },
+      { day: 14, step: "Cultural Management", desc: "Implement crop rotation and sanitation to prevent re-infestation.", method: "Cultural" },
+    ]
+  },
+  "Pine Caterpillar": {
+    scientific: "Unknown species (Pine Caterpillar)", family: "Unknown Family",
+    crops: ["Various Crops"], severity: "Medium", lifecycle: "14-30 days",
+    description: "A destructive agricultural pest found in the IP102 dataset. Detailed biological data requires field observation.",
+    treatment: [
+      { day: 1, step: "Initial Scouting", desc: "Monitor fields for early signs of infestation.", method: "Inspection" },
+      { day: 3, step: "Biocontrol Deployment", desc: "Introduce or conserve natural predators when possible.", method: "Biological" },
+      { day: 7, step: "Targeted Treatment", desc: "Apply recommended chemical control if economic threshold is exceeded.", method: "Chemical" },
+      { day: 14, step: "Cultural Management", desc: "Implement crop rotation and sanitation to prevent re-infestation.", method: "Cultural" },
+    ]
+  },
+  "Bark Beetle": {
+    scientific: "Unknown species (Bark Beetle)", family: "Unknown Family",
+    crops: ["Various Crops"], severity: "Medium", lifecycle: "14-30 days",
+    description: "A destructive agricultural pest found in the IP102 dataset. Detailed biological data requires field observation.",
+    treatment: [
+      { day: 1, step: "Initial Scouting", desc: "Monitor fields for early signs of infestation.", method: "Inspection" },
+      { day: 3, step: "Biocontrol Deployment", desc: "Introduce or conserve natural predators when possible.", method: "Biological" },
+      { day: 7, step: "Targeted Treatment", desc: "Apply recommended chemical control if economic threshold is exceeded.", method: "Chemical" },
+      { day: 14, step: "Cultural Management", desc: "Implement crop rotation and sanitation to prevent re-infestation.", method: "Cultural" },
+    ]
+  },
+  "Longhorn Beetle": {
+    scientific: "Unknown species (Longhorn Beetle)", family: "Unknown Family",
+    crops: ["Various Crops"], severity: "Medium", lifecycle: "14-30 days",
+    description: "A destructive agricultural pest found in the IP102 dataset. Detailed biological data requires field observation.",
+    treatment: [
+      { day: 1, step: "Initial Scouting", desc: "Monitor fields for early signs of infestation.", method: "Inspection" },
+      { day: 3, step: "Biocontrol Deployment", desc: "Introduce or conserve natural predators when possible.", method: "Biological" },
+      { day: 7, step: "Targeted Treatment", desc: "Apply recommended chemical control if economic threshold is exceeded.", method: "Chemical" },
+      { day: 14, step: "Cultural Management", desc: "Implement crop rotation and sanitation to prevent re-infestation.", method: "Cultural" },
+    ]
+  },
+  "Weevil (Rice)": {
+    scientific: "Unknown species (Weevil (Rice))", family: "Unknown Family",
+    crops: ["Various Crops"], severity: "Medium", lifecycle: "14-30 days",
+    description: "A destructive agricultural pest found in the IP102 dataset. Detailed biological data requires field observation.",
+    treatment: [
+      { day: 1, step: "Initial Scouting", desc: "Monitor fields for early signs of infestation.", method: "Inspection" },
+      { day: 3, step: "Biocontrol Deployment", desc: "Introduce or conserve natural predators when possible.", method: "Biological" },
+      { day: 7, step: "Targeted Treatment", desc: "Apply recommended chemical control if economic threshold is exceeded.", method: "Chemical" },
+      { day: 14, step: "Cultural Management", desc: "Implement crop rotation and sanitation to prevent re-infestation.", method: "Cultural" },
+    ]
+  },
+  "Weevil (Grain)": {
+    scientific: "Unknown species (Weevil (Grain))", family: "Unknown Family",
+    crops: ["Various Crops"], severity: "Medium", lifecycle: "14-30 days",
+    description: "A destructive agricultural pest found in the IP102 dataset. Detailed biological data requires field observation.",
+    treatment: [
+      { day: 1, step: "Initial Scouting", desc: "Monitor fields for early signs of infestation.", method: "Inspection" },
+      { day: 3, step: "Biocontrol Deployment", desc: "Introduce or conserve natural predators when possible.", method: "Biological" },
+      { day: 7, step: "Targeted Treatment", desc: "Apply recommended chemical control if economic threshold is exceeded.", method: "Chemical" },
+      { day: 14, step: "Cultural Management", desc: "Implement crop rotation and sanitation to prevent re-infestation.", method: "Cultural" },
+    ]
+  },
+  "Spotted Cucumber Beetle": {
+    scientific: "Unknown species (Spotted Cucumber Beetle)", family: "Unknown Family",
+    crops: ["Various Crops"], severity: "Medium", lifecycle: "14-30 days",
+    description: "A destructive agricultural pest found in the IP102 dataset. Detailed biological data requires field observation.",
+    treatment: [
+      { day: 1, step: "Initial Scouting", desc: "Monitor fields for early signs of infestation.", method: "Inspection" },
+      { day: 3, step: "Biocontrol Deployment", desc: "Introduce or conserve natural predators when possible.", method: "Biological" },
+      { day: 7, step: "Targeted Treatment", desc: "Apply recommended chemical control if economic threshold is exceeded.", method: "Chemical" },
+      { day: 14, step: "Cultural Management", desc: "Implement crop rotation and sanitation to prevent re-infestation.", method: "Cultural" },
+    ]
+  },
+  "Flea Beetle (Striped)": {
+    scientific: "Unknown species (Flea Beetle (Striped))", family: "Unknown Family",
+    crops: ["Various Crops"], severity: "Medium", lifecycle: "14-30 days",
+    description: "A destructive agricultural pest found in the IP102 dataset. Detailed biological data requires field observation.",
+    treatment: [
+      { day: 1, step: "Initial Scouting", desc: "Monitor fields for early signs of infestation.", method: "Inspection" },
+      { day: 3, step: "Biocontrol Deployment", desc: "Introduce or conserve natural predators when possible.", method: "Biological" },
+      { day: 7, step: "Targeted Treatment", desc: "Apply recommended chemical control if economic threshold is exceeded.", method: "Chemical" },
+      { day: 14, step: "Cultural Management", desc: "Implement crop rotation and sanitation to prevent re-infestation.", method: "Cultural" },
+    ]
+  },
+  "Japanese Beetle": {
+    scientific: "Unknown species (Japanese Beetle)", family: "Unknown Family",
+    crops: ["Various Crops"], severity: "Medium", lifecycle: "14-30 days",
+    description: "A destructive agricultural pest found in the IP102 dataset. Detailed biological data requires field observation.",
+    treatment: [
+      { day: 1, step: "Initial Scouting", desc: "Monitor fields for early signs of infestation.", method: "Inspection" },
+      { day: 3, step: "Biocontrol Deployment", desc: "Introduce or conserve natural predators when possible.", method: "Biological" },
+      { day: 7, step: "Targeted Treatment", desc: "Apply recommended chemical control if economic threshold is exceeded.", method: "Chemical" },
+      { day: 14, step: "Cultural Management", desc: "Implement crop rotation and sanitation to prevent re-infestation.", method: "Cultural" },
+    ]
+  },
+  "Ladybug (Pest)": {
+    scientific: "Unknown species (Ladybug (Pest))", family: "Unknown Family",
+    crops: ["Various Crops"], severity: "Medium", lifecycle: "14-30 days",
+    description: "A destructive agricultural pest found in the IP102 dataset. Detailed biological data requires field observation.",
+    treatment: [
+      { day: 1, step: "Initial Scouting", desc: "Monitor fields for early signs of infestation.", method: "Inspection" },
+      { day: 3, step: "Biocontrol Deployment", desc: "Introduce or conserve natural predators when possible.", method: "Biological" },
+      { day: 7, step: "Targeted Treatment", desc: "Apply recommended chemical control if economic threshold is exceeded.", method: "Chemical" },
+      { day: 14, step: "Cultural Management", desc: "Implement crop rotation and sanitation to prevent re-infestation.", method: "Cultural" },
+    ]
+  },
+  "Blister Beetle": {
+    scientific: "Unknown species (Blister Beetle)", family: "Unknown Family",
+    crops: ["Various Crops"], severity: "Medium", lifecycle: "14-30 days",
+    description: "A destructive agricultural pest found in the IP102 dataset. Detailed biological data requires field observation.",
+    treatment: [
+      { day: 1, step: "Initial Scouting", desc: "Monitor fields for early signs of infestation.", method: "Inspection" },
+      { day: 3, step: "Biocontrol Deployment", desc: "Introduce or conserve natural predators when possible.", method: "Biological" },
+      { day: 7, step: "Targeted Treatment", desc: "Apply recommended chemical control if economic threshold is exceeded.", method: "Chemical" },
+      { day: 14, step: "Cultural Management", desc: "Implement crop rotation and sanitation to prevent re-infestation.", method: "Cultural" },
+    ]
+  },
+  "Stink Bug (Brown)": {
+    scientific: "Unknown species (Stink Bug (Brown))", family: "Unknown Family",
+    crops: ["Various Crops"], severity: "Medium", lifecycle: "14-30 days",
+    description: "A destructive agricultural pest found in the IP102 dataset. Detailed biological data requires field observation.",
+    treatment: [
+      { day: 1, step: "Initial Scouting", desc: "Monitor fields for early signs of infestation.", method: "Inspection" },
+      { day: 3, step: "Biocontrol Deployment", desc: "Introduce or conserve natural predators when possible.", method: "Biological" },
+      { day: 7, step: "Targeted Treatment", desc: "Apply recommended chemical control if economic threshold is exceeded.", method: "Chemical" },
+      { day: 14, step: "Cultural Management", desc: "Implement crop rotation and sanitation to prevent re-infestation.", method: "Cultural" },
+    ]
+  },
+  "Squash Bug": {
+    scientific: "Unknown species (Squash Bug)", family: "Unknown Family",
+    crops: ["Various Crops"], severity: "Medium", lifecycle: "14-30 days",
+    description: "A destructive agricultural pest found in the IP102 dataset. Detailed biological data requires field observation.",
+    treatment: [
+      { day: 1, step: "Initial Scouting", desc: "Monitor fields for early signs of infestation.", method: "Inspection" },
+      { day: 3, step: "Biocontrol Deployment", desc: "Introduce or conserve natural predators when possible.", method: "Biological" },
+      { day: 7, step: "Targeted Treatment", desc: "Apply recommended chemical control if economic threshold is exceeded.", method: "Chemical" },
+      { day: 14, step: "Cultural Management", desc: "Implement crop rotation and sanitation to prevent re-infestation.", method: "Cultural" },
+    ]
+  },
+  "Lygus Bug": {
+    scientific: "Unknown species (Lygus Bug)", family: "Unknown Family",
+    crops: ["Various Crops"], severity: "Medium", lifecycle: "14-30 days",
+    description: "A destructive agricultural pest found in the IP102 dataset. Detailed biological data requires field observation.",
+    treatment: [
+      { day: 1, step: "Initial Scouting", desc: "Monitor fields for early signs of infestation.", method: "Inspection" },
+      { day: 3, step: "Biocontrol Deployment", desc: "Introduce or conserve natural predators when possible.", method: "Biological" },
+      { day: 7, step: "Targeted Treatment", desc: "Apply recommended chemical control if economic threshold is exceeded.", method: "Chemical" },
+      { day: 14, step: "Cultural Management", desc: "Implement crop rotation and sanitation to prevent re-infestation.", method: "Cultural" },
+    ]
+  },
+  "Chinch Bug": {
+    scientific: "Unknown species (Chinch Bug)", family: "Unknown Family",
+    crops: ["Various Crops"], severity: "Medium", lifecycle: "14-30 days",
+    description: "A destructive agricultural pest found in the IP102 dataset. Detailed biological data requires field observation.",
+    treatment: [
+      { day: 1, step: "Initial Scouting", desc: "Monitor fields for early signs of infestation.", method: "Inspection" },
+      { day: 3, step: "Biocontrol Deployment", desc: "Introduce or conserve natural predators when possible.", method: "Biological" },
+      { day: 7, step: "Targeted Treatment", desc: "Apply recommended chemical control if economic threshold is exceeded.", method: "Chemical" },
+      { day: 14, step: "Cultural Management", desc: "Implement crop rotation and sanitation to prevent re-infestation.", method: "Cultural" },
+    ]
+  },
+  "Seed Bug": {
+    scientific: "Unknown species (Seed Bug)", family: "Unknown Family",
+    crops: ["Various Crops"], severity: "Medium", lifecycle: "14-30 days",
+    description: "A destructive agricultural pest found in the IP102 dataset. Detailed biological data requires field observation.",
+    treatment: [
+      { day: 1, step: "Initial Scouting", desc: "Monitor fields for early signs of infestation.", method: "Inspection" },
+      { day: 3, step: "Biocontrol Deployment", desc: "Introduce or conserve natural predators when possible.", method: "Biological" },
+      { day: 7, step: "Targeted Treatment", desc: "Apply recommended chemical control if economic threshold is exceeded.", method: "Chemical" },
+      { day: 14, step: "Cultural Management", desc: "Implement crop rotation and sanitation to prevent re-infestation.", method: "Cultural" },
+    ]
+  },
+  "Boxelder Bug": {
+    scientific: "Unknown species (Boxelder Bug)", family: "Unknown Family",
+    crops: ["Various Crops"], severity: "Medium", lifecycle: "14-30 days",
+    description: "A destructive agricultural pest found in the IP102 dataset. Detailed biological data requires field observation.",
+    treatment: [
+      { day: 1, step: "Initial Scouting", desc: "Monitor fields for early signs of infestation.", method: "Inspection" },
+      { day: 3, step: "Biocontrol Deployment", desc: "Introduce or conserve natural predators when possible.", method: "Biological" },
+      { day: 7, step: "Targeted Treatment", desc: "Apply recommended chemical control if economic threshold is exceeded.", method: "Chemical" },
+      { day: 14, step: "Cultural Management", desc: "Implement crop rotation and sanitation to prevent re-infestation.", method: "Cultural" },
+    ]
+  },
+  "Cicada": {
+    scientific: "Unknown species (Cicada)", family: "Unknown Family",
+    crops: ["Various Crops"], severity: "Medium", lifecycle: "14-30 days",
+    description: "A destructive agricultural pest found in the IP102 dataset. Detailed biological data requires field observation.",
+    treatment: [
+      { day: 1, step: "Initial Scouting", desc: "Monitor fields for early signs of infestation.", method: "Inspection" },
+      { day: 3, step: "Biocontrol Deployment", desc: "Introduce or conserve natural predators when possible.", method: "Biological" },
+      { day: 7, step: "Targeted Treatment", desc: "Apply recommended chemical control if economic threshold is exceeded.", method: "Chemical" },
+      { day: 14, step: "Cultural Management", desc: "Implement crop rotation and sanitation to prevent re-infestation.", method: "Cultural" },
+    ]
+  },
+  "Planthopper": {
+    scientific: "Unknown species (Planthopper)", family: "Unknown Family",
+    crops: ["Various Crops"], severity: "Medium", lifecycle: "14-30 days",
+    description: "A destructive agricultural pest found in the IP102 dataset. Detailed biological data requires field observation.",
+    treatment: [
+      { day: 1, step: "Initial Scouting", desc: "Monitor fields for early signs of infestation.", method: "Inspection" },
+      { day: 3, step: "Biocontrol Deployment", desc: "Introduce or conserve natural predators when possible.", method: "Biological" },
+      { day: 7, step: "Targeted Treatment", desc: "Apply recommended chemical control if economic threshold is exceeded.", method: "Chemical" },
+      { day: 14, step: "Cultural Management", desc: "Implement crop rotation and sanitation to prevent re-infestation.", method: "Cultural" },
+    ]
+  },
+  "Leafhopper (Green)": {
+    scientific: "Unknown species (Leafhopper (Green))", family: "Unknown Family",
+    crops: ["Various Crops"], severity: "Medium", lifecycle: "14-30 days",
+    description: "A destructive agricultural pest found in the IP102 dataset. Detailed biological data requires field observation.",
+    treatment: [
+      { day: 1, step: "Initial Scouting", desc: "Monitor fields for early signs of infestation.", method: "Inspection" },
+      { day: 3, step: "Biocontrol Deployment", desc: "Introduce or conserve natural predators when possible.", method: "Biological" },
+      { day: 7, step: "Targeted Treatment", desc: "Apply recommended chemical control if economic threshold is exceeded.", method: "Chemical" },
+      { day: 14, step: "Cultural Management", desc: "Implement crop rotation and sanitation to prevent re-infestation.", method: "Cultural" },
+    ]
+  },
+  "Treehopper": {
+    scientific: "Unknown species (Treehopper)", family: "Unknown Family",
+    crops: ["Various Crops"], severity: "Medium", lifecycle: "14-30 days",
+    description: "A destructive agricultural pest found in the IP102 dataset. Detailed biological data requires field observation.",
+    treatment: [
+      { day: 1, step: "Initial Scouting", desc: "Monitor fields for early signs of infestation.", method: "Inspection" },
+      { day: 3, step: "Biocontrol Deployment", desc: "Introduce or conserve natural predators when possible.", method: "Biological" },
+      { day: 7, step: "Targeted Treatment", desc: "Apply recommended chemical control if economic threshold is exceeded.", method: "Chemical" },
+      { day: 14, step: "Cultural Management", desc: "Implement crop rotation and sanitation to prevent re-infestation.", method: "Cultural" },
+    ]
+  },
+  "Spittlebug": {
+    scientific: "Unknown species (Spittlebug)", family: "Unknown Family",
+    crops: ["Various Crops"], severity: "Medium", lifecycle: "14-30 days",
+    description: "A destructive agricultural pest found in the IP102 dataset. Detailed biological data requires field observation.",
+    treatment: [
+      { day: 1, step: "Initial Scouting", desc: "Monitor fields for early signs of infestation.", method: "Inspection" },
+      { day: 3, step: "Biocontrol Deployment", desc: "Introduce or conserve natural predators when possible.", method: "Biological" },
+      { day: 7, step: "Targeted Treatment", desc: "Apply recommended chemical control if economic threshold is exceeded.", method: "Chemical" },
+      { day: 14, step: "Cultural Management", desc: "Implement crop rotation and sanitation to prevent re-infestation.", method: "Cultural" },
+    ]
+  },
+  "Psyllid": {
+    scientific: "Unknown species (Psyllid)", family: "Unknown Family",
+    crops: ["Various Crops"], severity: "Medium", lifecycle: "14-30 days",
+    description: "A destructive agricultural pest found in the IP102 dataset. Detailed biological data requires field observation.",
+    treatment: [
+      { day: 1, step: "Initial Scouting", desc: "Monitor fields for early signs of infestation.", method: "Inspection" },
+      { day: 3, step: "Biocontrol Deployment", desc: "Introduce or conserve natural predators when possible.", method: "Biological" },
+      { day: 7, step: "Targeted Treatment", desc: "Apply recommended chemical control if economic threshold is exceeded.", method: "Chemical" },
+      { day: 14, step: "Cultural Management", desc: "Implement crop rotation and sanitation to prevent re-infestation.", method: "Cultural" },
+    ]
+  },
+  "Greenhouse Whitefly": {
+    scientific: "Unknown species (Greenhouse Whitefly)", family: "Unknown Family",
+    crops: ["Various Crops"], severity: "Medium", lifecycle: "14-30 days",
+    description: "A destructive agricultural pest found in the IP102 dataset. Detailed biological data requires field observation.",
+    treatment: [
+      { day: 1, step: "Initial Scouting", desc: "Monitor fields for early signs of infestation.", method: "Inspection" },
+      { day: 3, step: "Biocontrol Deployment", desc: "Introduce or conserve natural predators when possible.", method: "Biological" },
+      { day: 7, step: "Targeted Treatment", desc: "Apply recommended chemical control if economic threshold is exceeded.", method: "Chemical" },
+      { day: 14, step: "Cultural Management", desc: "Implement crop rotation and sanitation to prevent re-infestation.", method: "Cultural" },
+    ]
+  },
+  "Silverleaf Whitefly": {
+    scientific: "Unknown species (Silverleaf Whitefly)", family: "Unknown Family",
+    crops: ["Various Crops"], severity: "Medium", lifecycle: "14-30 days",
+    description: "A destructive agricultural pest found in the IP102 dataset. Detailed biological data requires field observation.",
+    treatment: [
+      { day: 1, step: "Initial Scouting", desc: "Monitor fields for early signs of infestation.", method: "Inspection" },
+      { day: 3, step: "Biocontrol Deployment", desc: "Introduce or conserve natural predators when possible.", method: "Biological" },
+      { day: 7, step: "Targeted Treatment", desc: "Apply recommended chemical control if economic threshold is exceeded.", method: "Chemical" },
+      { day: 14, step: "Cultural Management", desc: "Implement crop rotation and sanitation to prevent re-infestation.", method: "Cultural" },
+    ]
+  },
+  "Woolly Aphid": {
+    scientific: "Unknown species (Woolly Aphid)", family: "Unknown Family",
+    crops: ["Various Crops"], severity: "Medium", lifecycle: "14-30 days",
+    description: "A destructive agricultural pest found in the IP102 dataset. Detailed biological data requires field observation.",
+    treatment: [
+      { day: 1, step: "Initial Scouting", desc: "Monitor fields for early signs of infestation.", method: "Inspection" },
+      { day: 3, step: "Biocontrol Deployment", desc: "Introduce or conserve natural predators when possible.", method: "Biological" },
+      { day: 7, step: "Targeted Treatment", desc: "Apply recommended chemical control if economic threshold is exceeded.", method: "Chemical" },
+      { day: 14, step: "Cultural Management", desc: "Implement crop rotation and sanitation to prevent re-infestation.", method: "Cultural" },
+    ]
+  },
+  "Root Aphid": {
+    scientific: "Unknown species (Root Aphid)", family: "Unknown Family",
+    crops: ["Various Crops"], severity: "Medium", lifecycle: "14-30 days",
+    description: "A destructive agricultural pest found in the IP102 dataset. Detailed biological data requires field observation.",
+    treatment: [
+      { day: 1, step: "Initial Scouting", desc: "Monitor fields for early signs of infestation.", method: "Inspection" },
+      { day: 3, step: "Biocontrol Deployment", desc: "Introduce or conserve natural predators when possible.", method: "Biological" },
+      { day: 7, step: "Targeted Treatment", desc: "Apply recommended chemical control if economic threshold is exceeded.", method: "Chemical" },
+      { day: 14, step: "Cultural Management", desc: "Implement crop rotation and sanitation to prevent re-infestation.", method: "Cultural" },
+    ]
+  },
+  "Spider Mite": {
+    scientific: "Unknown species (Spider Mite)", family: "Unknown Family",
+    crops: ["Various Crops"], severity: "Medium", lifecycle: "14-30 days",
+    description: "A destructive agricultural pest found in the IP102 dataset. Detailed biological data requires field observation.",
+    treatment: [
+      { day: 1, step: "Initial Scouting", desc: "Monitor fields for early signs of infestation.", method: "Inspection" },
+      { day: 3, step: "Biocontrol Deployment", desc: "Introduce or conserve natural predators when possible.", method: "Biological" },
+      { day: 7, step: "Targeted Treatment", desc: "Apply recommended chemical control if economic threshold is exceeded.", method: "Chemical" },
+      { day: 14, step: "Cultural Management", desc: "Implement crop rotation and sanitation to prevent re-infestation.", method: "Cultural" },
+    ]
+  },
+  "Red Mite": {
+    scientific: "Unknown species (Red Mite)", family: "Unknown Family",
+    crops: ["Various Crops"], severity: "Medium", lifecycle: "14-30 days",
+    description: "A destructive agricultural pest found in the IP102 dataset. Detailed biological data requires field observation.",
+    treatment: [
+      { day: 1, step: "Initial Scouting", desc: "Monitor fields for early signs of infestation.", method: "Inspection" },
+      { day: 3, step: "Biocontrol Deployment", desc: "Introduce or conserve natural predators when possible.", method: "Biological" },
+      { day: 7, step: "Targeted Treatment", desc: "Apply recommended chemical control if economic threshold is exceeded.", method: "Chemical" },
+      { day: 14, step: "Cultural Management", desc: "Implement crop rotation and sanitation to prevent re-infestation.", method: "Cultural" },
+    ]
+  },
+  "Broad Mite": {
+    scientific: "Unknown species (Broad Mite)", family: "Unknown Family",
+    crops: ["Various Crops"], severity: "Medium", lifecycle: "14-30 days",
+    description: "A destructive agricultural pest found in the IP102 dataset. Detailed biological data requires field observation.",
+    treatment: [
+      { day: 1, step: "Initial Scouting", desc: "Monitor fields for early signs of infestation.", method: "Inspection" },
+      { day: 3, step: "Biocontrol Deployment", desc: "Introduce or conserve natural predators when possible.", method: "Biological" },
+      { day: 7, step: "Targeted Treatment", desc: "Apply recommended chemical control if economic threshold is exceeded.", method: "Chemical" },
+      { day: 14, step: "Cultural Management", desc: "Implement crop rotation and sanitation to prevent re-infestation.", method: "Cultural" },
+    ]
+  },
+  "Cyclamen Mite": {
+    scientific: "Unknown species (Cyclamen Mite)", family: "Unknown Family",
+    crops: ["Various Crops"], severity: "Medium", lifecycle: "14-30 days",
+    description: "A destructive agricultural pest found in the IP102 dataset. Detailed biological data requires field observation.",
+    treatment: [
+      { day: 1, step: "Initial Scouting", desc: "Monitor fields for early signs of infestation.", method: "Inspection" },
+      { day: 3, step: "Biocontrol Deployment", desc: "Introduce or conserve natural predators when possible.", method: "Biological" },
+      { day: 7, step: "Targeted Treatment", desc: "Apply recommended chemical control if economic threshold is exceeded.", method: "Chemical" },
+      { day: 14, step: "Cultural Management", desc: "Implement crop rotation and sanitation to prevent re-infestation.", method: "Cultural" },
+    ]
+  },
+  "Tomato Hornworm": {
+    scientific: "Unknown species (Tomato Hornworm)", family: "Unknown Family",
+    crops: ["Various Crops"], severity: "Medium", lifecycle: "14-30 days",
+    description: "A destructive agricultural pest found in the IP102 dataset. Detailed biological data requires field observation.",
+    treatment: [
+      { day: 1, step: "Initial Scouting", desc: "Monitor fields for early signs of infestation.", method: "Inspection" },
+      { day: 3, step: "Biocontrol Deployment", desc: "Introduce or conserve natural predators when possible.", method: "Biological" },
+      { day: 7, step: "Targeted Treatment", desc: "Apply recommended chemical control if economic threshold is exceeded.", method: "Chemical" },
+      { day: 14, step: "Cultural Management", desc: "Implement crop rotation and sanitation to prevent re-infestation.", method: "Cultural" },
+    ]
+  },
+  "Tobacco Hornworm": {
+    scientific: "Unknown species (Tobacco Hornworm)", family: "Unknown Family",
+    crops: ["Various Crops"], severity: "Medium", lifecycle: "14-30 days",
+    description: "A destructive agricultural pest found in the IP102 dataset. Detailed biological data requires field observation.",
+    treatment: [
+      { day: 1, step: "Initial Scouting", desc: "Monitor fields for early signs of infestation.", method: "Inspection" },
+      { day: 3, step: "Biocontrol Deployment", desc: "Introduce or conserve natural predators when possible.", method: "Biological" },
+      { day: 7, step: "Targeted Treatment", desc: "Apply recommended chemical control if economic threshold is exceeded.", method: "Chemical" },
+      { day: 14, step: "Cultural Management", desc: "Implement crop rotation and sanitation to prevent re-infestation.", method: "Cultural" },
+    ]
+  },
+  "Imported Cabbageworm": {
+    scientific: "Unknown species (Imported Cabbageworm)", family: "Unknown Family",
+    crops: ["Various Crops"], severity: "Medium", lifecycle: "14-30 days",
+    description: "A destructive agricultural pest found in the IP102 dataset. Detailed biological data requires field observation.",
+    treatment: [
+      { day: 1, step: "Initial Scouting", desc: "Monitor fields for early signs of infestation.", method: "Inspection" },
+      { day: 3, step: "Biocontrol Deployment", desc: "Introduce or conserve natural predators when possible.", method: "Biological" },
+      { day: 7, step: "Targeted Treatment", desc: "Apply recommended chemical control if economic threshold is exceeded.", method: "Chemical" },
+      { day: 14, step: "Cultural Management", desc: "Implement crop rotation and sanitation to prevent re-infestation.", method: "Cultural" },
+    ]
+  },
+  "Cross-Striped Cabbageworm": {
+    scientific: "Unknown species (Cross-Striped Cabbageworm)", family: "Unknown Family",
+    crops: ["Various Crops"], severity: "Medium", lifecycle: "14-30 days",
+    description: "A destructive agricultural pest found in the IP102 dataset. Detailed biological data requires field observation.",
+    treatment: [
+      { day: 1, step: "Initial Scouting", desc: "Monitor fields for early signs of infestation.", method: "Inspection" },
+      { day: 3, step: "Biocontrol Deployment", desc: "Introduce or conserve natural predators when possible.", method: "Biological" },
+      { day: 7, step: "Targeted Treatment", desc: "Apply recommended chemical control if economic threshold is exceeded.", method: "Chemical" },
+      { day: 14, step: "Cultural Management", desc: "Implement crop rotation and sanitation to prevent re-infestation.", method: "Cultural" },
+    ]
+  },
+  "Pickleworm": {
+    scientific: "Unknown species (Pickleworm)", family: "Unknown Family",
+    crops: ["Various Crops"], severity: "Medium", lifecycle: "14-30 days",
+    description: "A destructive agricultural pest found in the IP102 dataset. Detailed biological data requires field observation.",
+    treatment: [
+      { day: 1, step: "Initial Scouting", desc: "Monitor fields for early signs of infestation.", method: "Inspection" },
+      { day: 3, step: "Biocontrol Deployment", desc: "Introduce or conserve natural predators when possible.", method: "Biological" },
+      { day: 7, step: "Targeted Treatment", desc: "Apply recommended chemical control if economic threshold is exceeded.", method: "Chemical" },
+      { day: 14, step: "Cultural Management", desc: "Implement crop rotation and sanitation to prevent re-infestation.", method: "Cultural" },
+    ]
+  },
+  "Melonworm": {
+    scientific: "Unknown species (Melonworm)", family: "Unknown Family",
+    crops: ["Various Crops"], severity: "Medium", lifecycle: "14-30 days",
+    description: "A destructive agricultural pest found in the IP102 dataset. Detailed biological data requires field observation.",
+    treatment: [
+      { day: 1, step: "Initial Scouting", desc: "Monitor fields for early signs of infestation.", method: "Inspection" },
+      { day: 3, step: "Biocontrol Deployment", desc: "Introduce or conserve natural predators when possible.", method: "Biological" },
+      { day: 7, step: "Targeted Treatment", desc: "Apply recommended chemical control if economic threshold is exceeded.", method: "Chemical" },
+      { day: 14, step: "Cultural Management", desc: "Implement crop rotation and sanitation to prevent re-infestation.", method: "Cultural" },
+    ]
+  },
+  "European Corn Borer": {
+    scientific: "Unknown species (European Corn Borer)", family: "Unknown Family",
+    crops: ["Various Crops"], severity: "Medium", lifecycle: "14-30 days",
+    description: "A destructive agricultural pest found in the IP102 dataset. Detailed biological data requires field observation.",
+    treatment: [
+      { day: 1, step: "Initial Scouting", desc: "Monitor fields for early signs of infestation.", method: "Inspection" },
+      { day: 3, step: "Biocontrol Deployment", desc: "Introduce or conserve natural predators when possible.", method: "Biological" },
+      { day: 7, step: "Targeted Treatment", desc: "Apply recommended chemical control if economic threshold is exceeded.", method: "Chemical" },
+      { day: 14, step: "Cultural Management", desc: "Implement crop rotation and sanitation to prevent re-infestation.", method: "Cultural" },
+    ]
+  },
+  "Southwestern Corn Borer": {
+    scientific: "Unknown species (Southwestern Corn Borer)", family: "Unknown Family",
+    crops: ["Various Crops"], severity: "Medium", lifecycle: "14-30 days",
+    description: "A destructive agricultural pest found in the IP102 dataset. Detailed biological data requires field observation.",
+    treatment: [
+      { day: 1, step: "Initial Scouting", desc: "Monitor fields for early signs of infestation.", method: "Inspection" },
+      { day: 3, step: "Biocontrol Deployment", desc: "Introduce or conserve natural predators when possible.", method: "Biological" },
+      { day: 7, step: "Targeted Treatment", desc: "Apply recommended chemical control if economic threshold is exceeded.", method: "Chemical" },
+      { day: 14, step: "Cultural Management", desc: "Implement crop rotation and sanitation to prevent re-infestation.", method: "Cultural" },
+    ]
+  },
+  "Sugarcane Borer": {
+    scientific: "Unknown species (Sugarcane Borer)", family: "Unknown Family",
+    crops: ["Various Crops"], severity: "Medium", lifecycle: "14-30 days",
+    description: "A destructive agricultural pest found in the IP102 dataset. Detailed biological data requires field observation.",
+    treatment: [
+      { day: 1, step: "Initial Scouting", desc: "Monitor fields for early signs of infestation.", method: "Inspection" },
+      { day: 3, step: "Biocontrol Deployment", desc: "Introduce or conserve natural predators when possible.", method: "Biological" },
+      { day: 7, step: "Targeted Treatment", desc: "Apply recommended chemical control if economic threshold is exceeded.", method: "Chemical" },
+      { day: 14, step: "Cultural Management", desc: "Implement crop rotation and sanitation to prevent re-infestation.", method: "Cultural" },
+    ]
+  },
+  "Lesser Cornstalk Borer": {
+    scientific: "Unknown species (Lesser Cornstalk Borer)", family: "Unknown Family",
+    crops: ["Various Crops"], severity: "Medium", lifecycle: "14-30 days",
+    description: "A destructive agricultural pest found in the IP102 dataset. Detailed biological data requires field observation.",
+    treatment: [
+      { day: 1, step: "Initial Scouting", desc: "Monitor fields for early signs of infestation.", method: "Inspection" },
+      { day: 3, step: "Biocontrol Deployment", desc: "Introduce or conserve natural predators when possible.", method: "Biological" },
+      { day: 7, step: "Targeted Treatment", desc: "Apply recommended chemical control if economic threshold is exceeded.", method: "Chemical" },
+      { day: 14, step: "Cultural Management", desc: "Implement crop rotation and sanitation to prevent re-infestation.", method: "Cultural" },
+    ]
+  },
+  "Sod Webworm": {
+    scientific: "Unknown species (Sod Webworm)", family: "Unknown Family",
+    crops: ["Various Crops"], severity: "Medium", lifecycle: "14-30 days",
+    description: "A destructive agricultural pest found in the IP102 dataset. Detailed biological data requires field observation.",
+    treatment: [
+      { day: 1, step: "Initial Scouting", desc: "Monitor fields for early signs of infestation.", method: "Inspection" },
+      { day: 3, step: "Biocontrol Deployment", desc: "Introduce or conserve natural predators when possible.", method: "Biological" },
+      { day: 7, step: "Targeted Treatment", desc: "Apply recommended chemical control if economic threshold is exceeded.", method: "Chemical" },
+      { day: 14, step: "Cultural Management", desc: "Implement crop rotation and sanitation to prevent re-infestation.", method: "Cultural" },
+    ]
+  },
+  "Cranberry Fruitworm": {
+    scientific: "Unknown species (Cranberry Fruitworm)", family: "Unknown Family",
+    crops: ["Various Crops"], severity: "Medium", lifecycle: "14-30 days",
+    description: "A destructive agricultural pest found in the IP102 dataset. Detailed biological data requires field observation.",
+    treatment: [
+      { day: 1, step: "Initial Scouting", desc: "Monitor fields for early signs of infestation.", method: "Inspection" },
+      { day: 3, step: "Biocontrol Deployment", desc: "Introduce or conserve natural predators when possible.", method: "Biological" },
+      { day: 7, step: "Targeted Treatment", desc: "Apply recommended chemical control if economic threshold is exceeded.", method: "Chemical" },
+      { day: 14, step: "Cultural Management", desc: "Implement crop rotation and sanitation to prevent re-infestation.", method: "Cultural" },
+    ]
+  },
 };
 
 /**
  * Get pest info by exact name or fuzzy match
  */
 export function getPestInfo(pestName) {
+  if (!pestName) return { found: false, pest_name: pestName, message: "Pest not in database" };
+  
+  const normalizedInput = pestName.replace(/_/g, ' ').toLowerCase();
   let info = PEST_DATABASE[pestName];
+  let matchedName = pestName;
+
   if (!info) {
-    // Fuzzy match
+    // Exact or Fuzzy match against keys and scientific names
     for (const [key, val] of Object.entries(PEST_DATABASE)) {
-      if (pestName.toLowerCase().includes(key.toLowerCase()) || key.toLowerCase().includes(pestName.toLowerCase())) {
+      const keyNorm = key.toLowerCase();
+      const sciNorm = val.scientific ? val.scientific.toLowerCase() : '';
+      
+      if (
+        normalizedInput === keyNorm || 
+        normalizedInput === sciNorm ||
+        normalizedInput.includes(keyNorm) || 
+        keyNorm.includes(normalizedInput) ||
+        (sciNorm && (normalizedInput.includes(sciNorm) || sciNorm.includes(normalizedInput)))
+      ) {
         info = val;
-        pestName = key;
+        matchedName = key;
         break;
       }
     }
   }
+
   if (info) {
-    return { found: true, pest_name: pestName, ...info };
+    return { found: true, pest_name: matchedName, ...info };
   }
   return { found: false, pest_name: pestName, message: "Pest not in database" };
 }

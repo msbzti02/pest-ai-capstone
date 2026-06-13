@@ -1,4 +1,4 @@
-import { Bug, Activity, ShieldAlert, Download, FlaskConical, Loader2, Info, BookOpen } from 'lucide-react';
+import { Bug, Activity, ShieldAlert, Download, FlaskConical, Loader2, Info, BookOpen, CalendarCheck } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useState, useEffect } from 'react';
 import axios from 'axios';
@@ -15,6 +15,9 @@ export function ResultsPanel({ results, confidenceThreshold, onExportPdf }) {
   const [loadingBiology, setLoadingBiology] = useState(false);
   const [biologyError, setBiologyError] = useState(null);
 
+  const [isTracked, setIsTracked] = useState(false);
+  const [isTracking, setIsTracking] = useState(false);
+
   useEffect(() => {
     async function fetchTreatment() {
       if (!isHighConfidence) return;
@@ -22,11 +25,31 @@ export function ResultsPanel({ results, confidenceThreshold, onExportPdf }) {
       setLoadingTreatment(true);
       setTreatmentError(null);
       try {
-        const response = await axios.post('/api/treatment', { pest_name: primary.label });
+        let lat = null;
+        let lon = null;
+        
+        // Attempt to get location for weather-aware treatment
+        if (navigator.geolocation) {
+          try {
+            const position = await new Promise((resolve, reject) => {
+              navigator.geolocation.getCurrentPosition(resolve, reject, { timeout: 5000 });
+            });
+            lat = position.coords.latitude;
+            lon = position.coords.longitude;
+          } catch (geoErr) {
+            console.warn('Geolocation failed or denied, using default location.');
+          }
+        }
+
+        const response = await axios.post('/api/treatment', { 
+          pest_name: primary.label,
+          lat: lat,
+          lon: lon,
+          analysis_id: results.analysis_id
+        });
         setTreatment(response.data.recommendation);
       } catch (err) {
-        console.error('Error fetching treatment:', err);
-        setTreatmentError('Tedavi önerisi alınamadı.');
+        setTreatmentError('Could not retrieve treatment recommendation.');
       } finally {
         setLoadingTreatment(false);
       }
@@ -36,17 +59,35 @@ export function ResultsPanel({ results, confidenceThreshold, onExportPdf }) {
   }, [primary.label, isHighConfidence]);
 
   const handleBiologyFetch = async () => {
-    if (!primary.label) return;
     setLoadingBiology(true);
     setBiologyError(null);
     try {
-      const response = await axios.post('/api/biology', { pest_name: primary.label });
-      setBiologyInfo(response.data.info);
+      const res = await axios.post('/api/biology', { pest_name: primary.label });
+      setBiologyInfo(res.data.info);
     } catch (err) {
+      setBiologyError('Failed to fetch biological information from database.');
       console.error(err);
-      setBiologyError('Biyolojik ansiklopediye bağlanırken bir hata oluştu.');
     } finally {
       setLoadingBiology(false);
+    }
+  };
+
+  const handleTrackTreatment = async () => {
+    setIsTracking(true);
+    try {
+      const sessionId = localStorage.getItem('pestai_session') || 'demo_session';
+      await axios.post('/api/treatment/start', {
+        pest_name: primary.label,
+        crop: 'corn', // Defaulting to corn
+        field_size_ha: 1,
+        session_id: sessionId,
+        custom_protocol: treatment
+      });
+      setIsTracked(true);
+    } catch (err) {
+      console.error('Failed to start tracking:', err);
+    } finally {
+      setIsTracking(false);
     }
   };
 
@@ -113,11 +154,68 @@ export function ResultsPanel({ results, confidenceThreshold, onExportPdf }) {
         </div>
       </div>
 
+      {/* Treatment Recommendation Card */}
+      {isHighConfidence && (
+        <motion.div 
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.1 }}
+          className="mt-6 glass-panel overflow-hidden border-t-4 border-t-blue-500"
+        >
+          <div className="p-6">
+            <div className="flex items-center justify-between mb-4 border-b border-border pb-4">
+              <div className="flex items-center gap-3">
+                <div className="p-2 rounded-lg bg-blue-500/10">
+                  <FlaskConical className="w-6 h-6 text-blue-500" />
+                </div>
+                <div>
+                  <h3 className="text-xl font-bold text-foreground">Nexus Weather-Aware Protocol</h3>
+                  <p className="text-sm text-muted-foreground">Dynamic, real-time treatment guidelines fused with meteorology</p>
+                </div>
+              </div>
+              <button 
+                onClick={handleTrackTreatment}
+                disabled={isTracked || isTracking}
+                className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition shadow-lg ${
+                  isTracked 
+                    ? 'bg-blue-500/20 text-blue-400 cursor-default' 
+                    : 'bg-blue-600 hover:bg-blue-500 text-white shadow-blue-500/20'
+                }`}
+              >
+                <CalendarCheck className="w-4 h-4" />
+                {isTracking ? 'Saving...' : isTracked ? 'Added to Tracker' : 'Save to Tracker'}
+              </button>
+            </div>
+
+            <div className="min-h-[100px] relative">
+              {loadingTreatment ? (
+                <div className="flex flex-col items-center justify-center py-8 text-muted-foreground gap-3">
+                  <Loader2 className="w-8 h-8 animate-spin text-blue-500" />
+                  <p className="text-sm animate-pulse">Analyzing laboratory data...</p>
+                </div>
+              ) : treatmentError ? (
+                <div className="flex items-center gap-2 text-warning p-4 bg-warning/10 rounded-lg">
+                  <ShieldAlert className="w-5 h-5" />
+                  <p className="text-sm">{treatmentError}</p>
+                </div>
+              ) : treatment ? (
+                <div id="treatment-content" className="prose prose-invert prose-blue max-w-none prose-sm sm:prose-base
+                              prose-headings:text-blue-400 prose-headings:font-semibold
+                              prose-strong:text-blue-300 prose-p:text-muted-foreground
+                              prose-li:text-muted-foreground prose-ul:my-2">
+                  <ReactMarkdown>{treatment}</ReactMarkdown>
+                </div>
+              ) : null}
+            </div>
+          </div>
+        </motion.div>
+      )}
+
       {/* Biological Info Card */}
       <motion.div 
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.1 }}
+        transition={{ delay: 0.2 }}
         className="mt-6 glass-panel overflow-hidden border-t-4 border-t-emerald-500"
       >
         <div className="p-6">
@@ -127,8 +225,8 @@ export function ResultsPanel({ results, confidenceThreshold, onExportPdf }) {
                 <BookOpen className="w-6 h-6 text-emerald-500" />
               </div>
               <div>
-                <h3 className="text-xl font-bold text-foreground">Biyolojik Bilgi Veritabanı</h3>
-                <p className="text-sm text-muted-foreground">Bu zararlı hakkında ansiklopedik bilgiler</p>
+                <h3 className="text-xl font-bold text-foreground">Biological Information Database</h3>
+                <p className="text-sm text-muted-foreground">Encyclopedic information about this pest</p>
               </div>
             </div>
             {!biologyInfo && !loadingBiology && (
@@ -136,7 +234,7 @@ export function ResultsPanel({ results, confidenceThreshold, onExportPdf }) {
                 onClick={handleBiologyFetch}
                 className="px-4 py-2 bg-emerald-500 hover:bg-emerald-600 text-white rounded-lg text-sm font-medium transition shadow-lg shadow-emerald-500/20"
               >
-                Bilgi Getir
+                Fetch Information
               </button>
             )}
           </div>
@@ -145,7 +243,7 @@ export function ResultsPanel({ results, confidenceThreshold, onExportPdf }) {
             {loadingBiology ? (
               <div className="flex flex-col items-center justify-center py-6 text-muted-foreground gap-3">
                 <Loader2 className="w-8 h-8 animate-spin text-emerald-500" />
-                <p className="text-sm animate-pulse">Ansiklopedi taranıyor...</p>
+                <p className="text-sm animate-pulse">Scanning encyclopedia...</p>
               </div>
             ) : biologyError ? (
               <div className="flex items-center gap-2 text-warning p-4 bg-warning/10 rounded-lg">
@@ -153,7 +251,7 @@ export function ResultsPanel({ results, confidenceThreshold, onExportPdf }) {
                 <p className="text-sm">{biologyError}</p>
               </div>
             ) : biologyInfo ? (
-              <div className="prose prose-invert prose-emerald max-w-none prose-sm sm:prose-base
+              <div id="biology-content" className="prose prose-invert prose-emerald max-w-none prose-sm sm:prose-base
                               prose-headings:text-emerald-400 prose-headings:font-semibold
                               prose-strong:text-emerald-300 prose-p:text-muted-foreground
                               prose-li:text-muted-foreground prose-ul:my-2">
@@ -161,64 +259,12 @@ export function ResultsPanel({ results, confidenceThreshold, onExportPdf }) {
               </div>
             ) : (
               <p className="text-sm text-muted-foreground italic">
-                PestAI'nin bulduğu böceğin anatomisi, yaşam döngüsü ve bitkilere verdiği zarar mekanizması hakkında bilimsel veritabanından bilgi çekmek için "Bilgi Getir" butonuna tıklayabilirsiniz.
+                You can click the "Fetch Information" button to retrieve data from the scientific database regarding the anatomy, life cycle, and crop damage mechanism of the pest detected by PestAI.
               </p>
             )}
           </div>
         </div>
       </motion.div>
-
-      {/* Treatment Recommendation Card */}
-      {isHighConfidence && (
-        <motion.div 
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.2 }}
-          className="mt-6 glass-panel overflow-hidden border-t-4 border-t-blue-500"
-        >
-          <div className="p-6">
-            <div className="flex items-center gap-3 mb-4 border-b border-border pb-4">
-              <div className="p-2 rounded-lg bg-blue-500/10">
-                <FlaskConical className="w-6 h-6 text-blue-500" />
-              </div>
-              <div>
-                <h3 className="text-xl font-bold text-foreground">AI Ziraat Mühendisi Önerisi</h3>
-                <p className="text-sm text-muted-foreground">Bu zararlıya karşı tedavi ve ilaçlama planı</p>
-              </div>
-            </div>
-
-            <div className="min-h-[100px] relative">
-              {loadingTreatment ? (
-                <div className="flex flex-col items-center justify-center py-8 text-muted-foreground gap-3">
-                  <Loader2 className="w-8 h-8 animate-spin text-blue-500" />
-                  <p className="text-sm animate-pulse">Laboratuvar verileri analiz ediliyor...</p>
-                </div>
-              ) : treatmentError ? (
-                <div className="flex items-center gap-2 text-warning p-4 bg-warning/10 rounded-lg">
-                  <ShieldAlert className="w-5 h-5" />
-                  <p className="text-sm">{treatmentError}</p>
-                </div>
-              ) : treatment ? (
-                <div className="prose prose-invert prose-blue max-w-none prose-sm sm:prose-base
-                              prose-headings:text-blue-400 prose-headings:font-semibold
-                              prose-strong:text-blue-300 prose-p:text-muted-foreground
-                              prose-li:text-muted-foreground prose-ul:my-2">
-                  <ReactMarkdown>{treatment}</ReactMarkdown>
-                  
-                  <div className="mt-6 flex items-start gap-3 p-4 bg-secondary/50 rounded-lg border border-border/50">
-                    <Info className="w-5 h-5 text-muted-foreground shrink-0 mt-0.5" />
-                    <p className="text-xs text-muted-foreground leading-relaxed">
-                      <strong>Uyarı:</strong> Bu öneriler Yapay Zeka (LLM) tarafından üretilmiş olup bilgilendirme amaçlıdır. 
-                      Lütfen tarımsal ilaç (pestisit) kullanmadan önce her zaman yerel yönetmeliklere uyunuz ve 
-                      gerçek bir ziraat mühendisine danışınız.
-                    </p>
-                  </div>
-                </div>
-              ) : null}
-            </div>
-          </div>
-        </motion.div>
-      )}
     </motion.div>
   );
 }
